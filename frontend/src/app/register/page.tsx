@@ -76,31 +76,31 @@ function RegisterForm() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-md p-8">
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
             Dream<span className="text-orange-500">Startup</span>
           </h1>
-          <p className="mt-1 text-sm text-gray-500">Apka Sapna, Humara Sahayog</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">Apka Sapna, Humara Sahayog</p>
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6 text-center">
           Create your account
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           {/* Role selector */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               I am a
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -112,7 +112,7 @@ function RegisterForm() {
                   className={`py-2.5 rounded-lg border text-sm font-semibold transition ${
                     role === r
                       ? 'bg-[#1e3a5f] border-[#1e3a5f] text-white'
-                      : 'bg-white border-gray-300 text-gray-600 hover:border-[#1e3a5f]'
+                      : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-[#1e3a5f]'
                   }`}
                 >
                   {r === 'customer' ? 'Customer' : 'Vendor / Provider'}
@@ -123,7 +123,7 @@ function RegisterForm() {
 
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Full name
             </label>
             <input
@@ -134,13 +134,13 @@ function RegisterForm() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Rahul Sharma"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email address
             </label>
             <input
@@ -151,13 +151,13 @@ function RegisterForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Phone number
             </label>
             <input
@@ -168,13 +168,13 @@ function RegisterForm() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98765 43210"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Password
             </label>
             <input
@@ -185,13 +185,13 @@ function RegisterForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 6 characters"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Confirm password
             </label>
             <input
@@ -202,7 +202,7 @@ function RegisterForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter password"
-              className={`w-full rounded-lg border px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition ${
+              className={`w-full rounded-lg border px-4 py-2.5 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition ${
                 confirmPassword && confirmPassword !== password
                   ? 'border-red-400'
                   : 'border-gray-300'
@@ -231,7 +231,7 @@ function RegisterForm() {
         </form>
 
         {/* Login link */}
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
           Already have an account?{' '}
           <Link
             href="/login"
@@ -249,7 +249,7 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
           <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
         </div>
       }

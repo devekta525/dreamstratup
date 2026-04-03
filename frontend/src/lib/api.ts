@@ -14,6 +14,17 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   }
+  
+  // If the payload is FormData, we must let browser infer Content-Type and boundary
+  if (config.data instanceof FormData) {
+    if (config.headers && typeof config.headers.delete === 'function') {
+      config.headers.delete('Content-Type');
+    } else if (config.headers) {
+      delete config.headers['Content-Type'];
+      delete config.headers['content-type'];
+    }
+  }
+  
   return config;
 });
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element */
 import toast from 'react-hot-toast';
 import { cartService } from '@/services/cart.service';
 import { Cart, CartItem } from '@/types';
@@ -13,7 +13,7 @@ function getImageSrc(images: string[] | undefined): string {
   if (!images || images.length === 0) return '/placeholder-product.png';
   const src = images[0];
   if (src.startsWith('http')) return src;
-  return `${process.env.NEXT_PUBLIC_API_URL ?? ''}/${src}`;
+  return `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${src.startsWith('/') ? '' : '/'}${src}`;
 }
 
 export default function CartPage() {
@@ -80,7 +80,7 @@ export default function CartPage() {
   // --- Loading skeleton ---
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -91,10 +91,10 @@ export default function CartPage() {
 
   if (isEmpty) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-5 px-4 py-20">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center gap-5 px-4 py-20">
         <div className="text-6xl">🛒</div>
-        <h2 className="text-2xl font-bold text-gray-800">Your cart is empty</h2>
-        <p className="text-gray-500 text-sm text-center max-w-xs">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Your cart is empty</h2>
+        <p className="text-gray-500 dark:text-gray-300 text-sm text-center max-w-xs">
           Looks like you haven&apos;t added anything yet. Browse our wholesale products and start filling it up!
         </p>
         <Link
@@ -113,13 +113,13 @@ export default function CartPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-[#1e3a5f]">
             Shopping Cart{' '}
-            <span className="text-base font-normal text-gray-500">
+            <span className="text-base font-normal text-gray-500 dark:text-gray-300">
               ({cart.items.length} {cart.items.length === 1 ? 'item' : 'items'})
             </span>
           </h1>
@@ -142,25 +142,24 @@ export default function CartPage() {
               return (
                 <div
                   key={productId + '-' + idx}
-                  className="bg-white rounded-xl shadow-sm p-4 flex gap-4 items-start"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex gap-4 items-start"
                 >
                   {/* Product Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                    <Image
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                    <img
                       src={getImageSrc(item.product?.images)}
                       alt={item.product?.title || 'Product Image'}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.src = '/placeholder-product.png'; }}
                     />
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-800 truncate">
+                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
                       {item.product?.title || 'Unknown Product'}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">
                       Unit price: ₹{item.price.toLocaleString('en-IN')}
                     </p>
 
@@ -169,12 +168,12 @@ export default function CartPage() {
                       <button
                         onClick={() => handleUpdateQuantity(productId, item.quantity - 1)}
                         disabled={isUpdating || item.quantity <= 1}
-                        className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 transition text-lg leading-none"
+                        className="w-7 h-7 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
                         aria-label="Decrease quantity"
                       >
                         −
                       </button>
-                      <span className="w-8 text-center text-sm font-medium text-gray-800">
+                      <span className="w-8 text-center text-sm font-medium text-gray-800 dark:text-gray-100">
                         {isUpdating ? (
                           <span className="inline-block w-3 h-3 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
                         ) : (
@@ -184,7 +183,7 @@ export default function CartPage() {
                       <button
                         onClick={() => handleUpdateQuantity(productId, item.quantity + 1)}
                         disabled={isUpdating}
-                        className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 flex items-center justify-center hover:bg-gray-100 disabled:opacity-40 transition text-lg leading-none"
+                        className="w-7 h-7 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
                         aria-label="Increase quantity"
                       >
                         +
@@ -213,13 +212,13 @@ export default function CartPage() {
 
           {/* Cart Summary Sidebar */}
           <div className="lg:w-80 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-20">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Order Summary</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sticky top-20">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Order Summary</h2>
 
-              <div className="space-y-3 text-sm text-gray-600">
+              <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
                 <div className="flex justify-between">
                   <span>Subtotal ({cart.items.length} items)</span>
-                  <span className="font-medium text-gray-800">
+                  <span className="font-medium text-gray-800 dark:text-gray-100">
                     ₹{subtotal.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -229,9 +228,9 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 my-4" />
+              <div className="border-t border-gray-200 dark:border-gray-700 my-4" />
 
-              <div className="flex justify-between text-base font-bold text-gray-900">
+              <div className="flex justify-between text-base font-bold text-gray-900 dark:text-gray-100">
                 <span>Total</span>
                 <span className="text-[#1e3a5f]">
                   ₹{(cart.totalAmount ?? subtotal).toLocaleString('en-IN')}

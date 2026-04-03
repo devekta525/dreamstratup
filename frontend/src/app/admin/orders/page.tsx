@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiChevronDown,
@@ -95,9 +95,10 @@ function ExpandedOrderRow({ order }: { order: AdminOrder }) {
               {item.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={item.image}
+                  src={item.image.startsWith('http') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${item.image.startsWith('/') ? '' : '/'}${item.image}`}
                   alt={item.title}
                   className="h-10 w-10 rounded-lg object-cover border border-gray-100"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
               ) : (
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
@@ -344,9 +345,9 @@ export default function AdminOrdersPage() {
                       'Date',
                       'Actions',
                       '',
-                    ].map((h) => (
+                    ].map((h, i) => (
                       <th
-                        key={h}
+                        key={h || i}
                         className="whitespace-nowrap px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
                       >
                         {h}
@@ -359,9 +360,8 @@ export default function AdminOrdersPage() {
                     const rs = rowStates[order._id];
                     const isExpanded = expandedRows.has(order._id);
                     return (
-                      <>
+                      <React.Fragment key={order._id}>
                         <tr
-                          key={order._id}
                           className={`transition ${isExpanded ? 'bg-[#1e3a5f]/[0.03]' : 'hover:bg-gray-50'}`}
                         >
                           {/* Order # */}
@@ -489,7 +489,7 @@ export default function AdminOrdersPage() {
                             </td>
                           </tr>
                         )}
-                      </>
+                      </React.Fragment>
                     );
                   })}
                 </tbody>

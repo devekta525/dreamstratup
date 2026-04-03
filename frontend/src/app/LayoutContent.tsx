@@ -12,7 +12,7 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       {!isAdminRoute && <Navbar />}
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
+      <main className="flex-1 pb-16 md:pb-0 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">{children}</main>
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <BottomNav />}
     </>

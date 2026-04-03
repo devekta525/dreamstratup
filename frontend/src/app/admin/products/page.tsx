@@ -329,23 +329,51 @@ function ProductModal({
               <label className="mb-1 block text-sm font-medium text-gray-700">
                 Images {!isEdit && <span className="text-red-500">*</span>}
               </label>
+
+              {/* Show preview of existing image if editing and no new file selected */}
+              {isEdit && editProduct?.images?.[0] && (!form.images || form.images.length === 0) && (
+                <div className="mb-3 flex items-center gap-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-gray-200">
+                    <img
+                      src={editProduct.images[0].startsWith('http') ? editProduct.images[0] : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${editProduct.images[0].startsWith('/') ? '' : '/'}${editProduct.images[0]}`}
+                      className="h-full w-full object-cover"
+                      alt="Current"
+                      onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=150&q=80'; }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-gray-500">Current Image</span>
+                </div>
+              )}
+
               <div
-                className="cursor-pointer rounded-xl border-2 border-dashed border-gray-200 px-4 py-5 text-center transition hover:border-[#1e3a5f]/50"
+                className="cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-gray-200 px-4 py-6 text-center transition hover:border-[#1e3a5f]/50 bg-white"
                 onClick={() => fileRef.current?.click()}
               >
                 {form.images && form.images.length > 0 ? (
-                  <p className="text-sm text-gray-600">
-                    {form.images.length} file{form.images.length > 1 ? 's' : ''} selected
-                  </p>
+                  <div className="flex flex-col items-center">
+                    <div className="flex gap-3 justify-center mb-3">
+                      {Array.from(form.images).slice(0, 3).map((f, i) => (
+                        <div key={i} className="relative h-20 w-20 overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+                          <img src={URL.createObjectURL(f)} alt="Preview" className="h-full w-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[13px] font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                      {form.images.length} new file{form.images.length > 1 ? 's' : ''} ready to save
+                    </p>
+                  </div>
                 ) : (
-                  <p className="text-sm text-gray-400">
-                    Click to upload images (JPG, PNG, WebP)
-                    {isEdit && (
-                      <span className="block mt-0.5 text-xs text-gray-400">
-                        Leave empty to keep existing images
-                      </span>
-                    )}
-                  </p>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center text-[#1e3a5f]">
+                      <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    </div>
+                    <p className="text-sm text-[#1e3a5f] font-bold mt-1">
+                      Click to upload new images
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Supports JPG, PNG, WebP
+                    </p>
+                  </div>
                 )}
                 <input
                   ref={fileRef}
@@ -576,13 +604,17 @@ export default function AdminProductsPage() {
                     <td className="px-4 py-3">
                       <div className="relative h-12 w-12 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
                         {product.images?.[0] ? (
-                          <Image
-                            src={product.images[0]}
+                          <img
+                            src={
+                              product.images[0].startsWith('http')
+                                ? product.images[0]
+                                : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${product.images[0].startsWith('/') ? '' : '/'}${product.images[0]}`
+                            }
                             alt={product.title}
-                            fill
-                            sizes="48px"
-                            className="object-cover"
-                            unoptimized
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=100&q=80';
+                            }}
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-gray-300 text-xs">

@@ -5,7 +5,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const imageUrl = product.images?.[0]
     ? product.images[0].startsWith('http')
       ? product.images[0]
-      : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${product.images[0]}`
+      : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${product.images[0].startsWith('/') ? '' : '/'}${product.images[0]}`
     : '';
 
   const compareAtPrice = Math.round(product.wholesalePrice * 1.2);
@@ -15,9 +15,9 @@ export default function ProductCard({ product }: { product: Product }) {
   );
 
   return (
-    <div className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
       <div className="relative p-4">
-        <div className="relative h-40 sm:h-44 bg-white">
+        <div className="relative h-40 sm:h-44 bg-white dark:bg-gray-800">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -26,7 +26,7 @@ export default function ProductCard({ product }: { product: Product }) {
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No Image</div>
+            <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-300 text-sm">No Image</div>
           )}
         </div>
 
@@ -46,7 +46,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
       <div className="px-4 pb-4">
         <Link href={`/shop/${product._id}`} className="block">
-          <h3 className="text-[13px] font-semibold text-gray-800 leading-snug line-clamp-2 min-h-[2.25rem]">
+          <h3 className="text-[13px] font-semibold text-gray-800 dark:text-gray-100 leading-snug line-clamp-2 min-h-[2.25rem]">
             {product.title}
           </h3>
         </Link>
@@ -56,7 +56,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-xs text-gray-400 line-through">
+          <span className="text-xs text-gray-400 dark:text-gray-300 line-through">
             ₹{compareAtPrice.toLocaleString('en-IN')}
           </span>
           <span className="text-sm font-extrabold text-[#d51243]">
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="mt-3">
           <Link
             href={`/shop/${product._id}`}
-            className="inline-flex items-center justify-center w-full h-10 rounded-lg border border-gray-200 text-sm font-semibold text-[#233a95] hover:bg-gray-50 transition"
+            className="inline-flex items-center justify-center w-full h-10 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-[#233a95] dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
           >
             View Details
           </Link>

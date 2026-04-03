@@ -115,7 +115,7 @@ export default function ProductDetailsPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <Loader />
       </div>
     );
@@ -123,12 +123,12 @@ export default function ProductDetailsPage({
 
   if (notFound || !product) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 text-center">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-5">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center px-4 text-center">
+        <div className="w-20 h-20 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-5">
           <FiAlertCircle size={36} className="text-red-400" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Product Not Found</h1>
-        <p className="text-gray-500 mb-6 max-w-sm">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Product Not Found</h1>
+        <p className="text-gray-500 dark:text-gray-300 mb-6 max-w-sm">
           The product you are looking for does not exist or may have been removed.
         </p>
         <Link
@@ -152,11 +152,11 @@ export default function ProductDetailsPage({
   const price = effectivePrice();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 text-sm text-gray-500">
+          <nav className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300">
             <Link href="/" className="hover:text-[#1e3a5f] transition">
               Home
             </Link>
@@ -183,7 +183,7 @@ export default function ProductDetailsPage({
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1e3a5f] mb-6 transition"
+          className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300 hover:text-[#1e3a5f] mb-6 transition"
         >
           <FiArrowLeft size={16} />
           Back
@@ -194,7 +194,7 @@ export default function ProductDetailsPage({
           {/* ─── Image Gallery ─── */}
           <div className="space-y-3">
             {/* Main Image */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden aspect-square flex items-center justify-center">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden aspect-square flex items-center justify-center">
               {hasImages ? (
                 <img
                   src={resolveImage(images[activeImage])}
@@ -219,7 +219,7 @@ export default function ProductDetailsPage({
                     className={`flex-shrink-0 w-16 h-16 rounded-xl border-2 overflow-hidden transition ${
                       activeImage === idx
                         ? 'border-orange-500 shadow-md'
-                        : 'border-gray-200 hover:border-orange-300'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-orange-300'
                     }`}
                   >
                     <img
@@ -262,13 +262,13 @@ export default function ProductDetailsPage({
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
               {product.title}
             </h1>
 
             {/* Category & Brand */}
             <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-1.5 text-gray-600">
+              <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
                 <FiTag size={14} className="text-orange-500" />
                 <span className="font-medium">Category:</span>
                 <Link
@@ -279,49 +279,49 @@ export default function ProductDetailsPage({
                 </Link>
               </div>
               {product.brand && (
-                <div className="flex items-center gap-1.5 text-gray-600">
+                <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
                   <FiLayers size={14} className="text-orange-500" />
                   <span className="font-medium">Brand:</span>
-                  <span className="text-gray-800">{product.brand}</span>
+                  <span className="text-gray-800 dark:text-gray-100">{product.brand}</span>
                 </div>
               )}
             </div>
 
             {/* Wholesale Price */}
-            <div className="bg-[#1e3a5f]/5 rounded-xl p-4 border border-[#1e3a5f]/10">
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <div className="bg-[#1e3a5f]/5 dark:bg-[#1e3a5f]/20 rounded-xl p-4 border border-[#1e3a5f]/10 dark:border-[#1e3a5f]/30">
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
                 Wholesale Price
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold text-[#1e3a5f]">
                   ₹{price.toLocaleString('en-IN')}
                 </span>
-                <span className="text-gray-500 text-sm">/ unit</span>
+                <span className="text-gray-500 dark:text-gray-400 text-sm">/ unit</span>
                 {hasBulkTiers && price < product.wholesalePrice && (
                   <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded-full">
                     Bulk discount applied
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Base price: ₹{product.wholesalePrice.toLocaleString('en-IN')} / unit
               </p>
             </div>
 
             {/* MOQ */}
-            <div className="flex items-center gap-2 text-sm text-gray-600 bg-orange-50 px-4 py-2.5 rounded-lg border border-orange-100">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 bg-orange-50 dark:bg-orange-900/20 px-4 py-2.5 rounded-lg border border-orange-100 dark:border-orange-800/30">
               <FiPackage size={16} className="text-orange-500 flex-shrink-0" />
               <span>
-                <span className="font-semibold text-gray-800">Minimum Order Quantity:</span>{' '}
-                <span className="text-orange-600 font-bold">{product.moq} units</span>
+                <span className="font-semibold text-gray-800 dark:text-gray-100">Minimum Order Quantity:</span>{' '}
+                <span className="text-orange-600 dark:text-orange-400 font-bold">{product.moq} units</span>
               </span>
             </div>
 
             {/* Description */}
             {product.description && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1.5">Description</h3>
-                <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1.5">Description</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                   {product.description}
                 </p>
               </div>
@@ -329,15 +329,15 @@ export default function ProductDetailsPage({
 
             {/* Quantity Selector */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-2">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-200 block mb-2">
                 Quantity
               </label>
               <div className="flex items-center gap-3">
-                <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                <div className="flex items-center border border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm">
                   <button
                     onClick={decrementQty}
                     disabled={quantity <= (product.moq ?? 1)}
-                    className="px-4 py-3 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                    className="px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
                     <FiMinus size={16} />
                   </button>
@@ -351,16 +351,16 @@ export default function ProductDetailsPage({
                         setQuantity(val);
                       }
                     }}
-                    className="w-16 text-center text-base font-semibold text-gray-800 border-0 focus:outline-none py-3"
+                    className="w-16 text-center text-base font-semibold text-gray-800 dark:text-gray-100 dark:bg-gray-800 border-0 focus:outline-none py-3"
                   />
                   <button
                     onClick={incrementQty}
-                    className="px-4 py-3 text-gray-600 hover:bg-gray-50 transition"
+                    className="px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                   >
                     <FiPlus size={16} />
                   </button>
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 dark:text-gray-300">
                   Total:{' '}
                   <span className="font-bold text-[#1e3a5f]">
                     ₹{(price * quantity).toLocaleString('en-IN')}
@@ -409,27 +409,27 @@ export default function ProductDetailsPage({
 
         {/* ─── Bulk Pricing Tiers ─── */}
         {hasBulkTiers && (
-          <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="text-lg font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
+            <h2 className="text-lg font-bold text-[#1e3a5f] dark:text-blue-300 mb-4 flex items-center gap-2">
               <FiLayers className="text-orange-500" size={20} />
               Bulk Pricing
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 rounded-lg">
-                    <th className="text-left px-4 py-3 font-semibold text-gray-600 rounded-l-lg">
+                  <tr className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-300 rounded-l-lg">
                       Quantity Range
                     </th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-600">
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">
                       Price per Unit
                     </th>
-                    <th className="text-left px-4 py-3 font-semibold text-gray-600 rounded-r-lg">
+                    <th className="text-left px-4 py-3 font-semibold text-gray-600 dark:text-gray-300 rounded-r-lg">
                       Savings
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                   {[...product.bulkPricingTiers]
                     .sort((a: BulkPricingTier, b: BulkPricingTier) => a.minQty - b.minQty)
                     .map((tier: BulkPricingTier, idx: number) => {
@@ -440,10 +440,10 @@ export default function ProductDetailsPage({
                         <tr
                           key={idx}
                           className={`transition ${
-                            isActive ? 'bg-orange-50' : 'hover:bg-gray-50'
+                            isActive ? 'bg-orange-50 dark:bg-orange-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                           }`}
                         >
-                          <td className="px-4 py-3 font-medium text-gray-800">
+                          <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-100">
                             {tier.minQty}
                             {tier.maxQty ? `–${tier.maxQty}` : '+'} units
                             {isActive && (
@@ -452,7 +452,7 @@ export default function ProductDetailsPage({
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 font-bold text-[#1e3a5f]">
+                          <td className="px-4 py-3 font-bold text-[#1e3a5f] dark:text-blue-300">
                             ₹{tier.price.toLocaleString('en-IN')}
                           </td>
                           <td className="px-4 py-3">
@@ -475,20 +475,20 @@ export default function ProductDetailsPage({
 
         {/* ─── Specifications ─── */}
         {hasSpecs && (
-          <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="text-lg font-bold text-[#1e3a5f] mb-4 flex items-center gap-2">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
+            <h2 className="text-lg font-bold text-[#1e3a5f] dark:text-blue-300 mb-4 flex items-center gap-2">
               <FiTag className="text-orange-500" size={20} />
               Specifications
             </h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                   {Object.entries(product.specifications!).map(([key, value]) => (
-                    <tr key={key} className="hover:bg-gray-50 transition">
-                      <td className="py-3 px-4 font-semibold text-gray-700 w-1/3 capitalize bg-gray-50/60">
+                    <tr key={key} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                      <td className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200 w-1/3 capitalize bg-gray-50/60 dark:bg-gray-700/60">
                         {key.replace(/_/g, ' ')}
                       </td>
-                      <td className="py-3 px-4 text-gray-600">{value}</td>
+                      <td className="py-3 px-4 text-gray-600 dark:text-gray-300">{value}</td>
                     </tr>
                   ))}
                 </tbody>

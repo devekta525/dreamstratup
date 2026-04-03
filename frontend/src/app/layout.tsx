@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { Toaster } from "react-hot-toast";
 import { LayoutContent } from "./LayoutContent";
 
@@ -25,12 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-gray-50">
-        <AuthProvider>
-          <CartProvider>
-            <Toaster position="top-right" />
-            <LayoutContent>{children}</LayoutContent>
-          </CartProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Toaster position="top-right" />
+              <LayoutContent>{children}</LayoutContent>
+            </CartProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

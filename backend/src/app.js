@@ -23,7 +23,9 @@ const errorHandler = require("./middleware/errorHandler");
 const app = express();
 
 // ─── Security Middleware ─────────────────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 app.use(

@@ -21,23 +21,23 @@ function OrderRow({ order }: { order: Order }) {
     <>
       {/* Summary row */}
       <tr
-        className="cursor-pointer transition hover:bg-gray-50"
+        className="cursor-pointer transition hover:bg-gray-50 dark:hover:bg-gray-700"
         onClick={() => setExpanded((prev) => !prev)}
       >
         <td className="whitespace-nowrap px-5 py-4 text-sm font-semibold text-[#1e3a5f]">
           #{order.orderNumber}
         </td>
-        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-500">
+        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-500 dark:text-gray-300">
           {new Date(order.createdAt).toLocaleDateString('en-IN', {
             day: '2-digit',
             month: 'short',
             year: 'numeric',
           })}
         </td>
-        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600 dark:text-gray-300">
           {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
         </td>
-        <td className="whitespace-nowrap px-5 py-4 text-sm font-semibold text-gray-800">
+        <td className="whitespace-nowrap px-5 py-4 text-sm font-semibold text-gray-800 dark:text-gray-100">
           ₹{order.totalAmount.toLocaleString('en-IN')}
         </td>
         <td className="whitespace-nowrap px-5 py-4">
@@ -57,12 +57,12 @@ function OrderRow({ order }: { order: Order }) {
 
       {/* Expanded detail row */}
       {expanded && (
-        <tr className="bg-blue-50/40">
+        <tr className="bg-blue-50/40 dark:bg-gray-800/60">
           <td colSpan={7} className="px-5 py-5">
             <div className="grid gap-6 sm:grid-cols-2">
               {/* Items */}
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300">
                   Order Items
                 </p>
                 <div className="space-y-3">
@@ -70,20 +70,21 @@ function OrderRow({ order }: { order: Order }) {
                     <div key={idx} className="flex items-center gap-3">
                       {item.image ? (
                         <img
-                          src={item.image}
+                          src={item.image.startsWith('http') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${item.image.startsWith('/') ? '' : '/'}${item.image}`}
                           alt={item.title}
-                          className="h-12 w-12 flex-shrink-0 rounded-lg border border-gray-200 object-cover"
+                          className="h-12 w-12 flex-shrink-0 rounded-lg border border-gray-200 dark:border-gray-700 object-cover"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       ) : (
-                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-700">
                           <FiPackage size={18} className="text-gray-400" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm font-medium text-gray-800">
+                        <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-100">
                           {item.title}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-300">
                           Qty: {item.quantity} &times; ₹
                           {item.price.toLocaleString('en-IN')}
                         </p>
@@ -98,23 +99,23 @@ function OrderRow({ order }: { order: Order }) {
 
               {/* Shipping address */}
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300">
                   Shipping Address
                 </p>
-                <div className="rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-700 space-y-1">
+                <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-700 dark:text-gray-300 space-y-1">
                   <p>{addr.address}</p>
                   <p>
                     {addr.city}, {addr.state} — {addr.pincode}
                   </p>
-                  <p className="text-gray-500">Phone: {addr.phone}</p>
+                  <p className="text-gray-500 dark:text-gray-400">Phone: {addr.phone}</p>
                 </div>
 
                 {order.notes && (
                   <div className="mt-4">
-                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300">
                       Notes
                     </p>
-                    <p className="rounded-xl border border-gray-200 bg-white p-3 text-sm text-gray-600 italic">
+                    <p className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 text-sm text-gray-600 dark:text-gray-300 italic">
                       {order.notes}
                     </p>
                   </div>
@@ -183,7 +184,7 @@ export default function MyOrdersPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -210,9 +211,9 @@ export default function MyOrdersPage() {
         )}
 
         {!loading && !error && orders.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-20 text-center">
+          <div className="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-20 text-center">
             <FiPackage size={48} className="mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-semibold text-gray-600">
+            <p className="text-lg font-semibold text-gray-600 dark:text-gray-300">
               You have no orders yet
             </p>
             <p className="mt-1 text-sm text-gray-400">
@@ -228,10 +229,10 @@ export default function MyOrdersPage() {
         )}
 
         {!loading && !error && orders.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-100">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
                     {[
                       'Order #',
@@ -244,14 +245,14 @@ export default function MyOrdersPage() {
                     ].map((h) => (
                       <th
                         key={h}
-                        className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 last:text-right"
+                        className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300 last:text-right"
                       >
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {orders.map((order) => (
                     <OrderRow key={order._id} order={order} />
                   ))}
@@ -259,7 +260,7 @@ export default function MyOrdersPage() {
               </table>
             </div>
 
-            <div className="border-t border-gray-100 bg-gray-50 px-5 py-3 text-right text-xs text-gray-400">
+            <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-5 py-3 text-right text-xs text-gray-400">
               {orders.length} order{orders.length !== 1 ? 's' : ''} total
             </div>
           </div>

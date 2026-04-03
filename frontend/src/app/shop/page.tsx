@@ -172,11 +172,11 @@ function ShopContent() {
       className={
         mobile
           ? 'w-full'
-          : 'w-64 flex-shrink-0 bg-white rounded-xl shadow-sm border border-gray-100 p-5 h-fit sticky top-20'
+          : 'w-64 flex-shrink-0 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 h-fit sticky top-20'
       }
     >
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-base font-semibold text-[#1e3a5f]">Filters</h2>
+        <h2 className="text-base font-semibold text-[#1e3a5f] dark:text-blue-300">Filters</h2>
         {activeFilterCount > 0 && (
           <button
             onClick={clearFilters}
@@ -189,7 +189,7 @@ function ShopContent() {
 
       {/* Category */}
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">Category</h3>
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Category</h3>
         <div className="space-y-2">
           {CATEGORIES.map((cat) => (
             <label key={cat} className="flex items-center gap-2 cursor-pointer group">
@@ -197,9 +197,9 @@ function ShopContent() {
                 type="checkbox"
                 checked={pendingFilters.categories.includes(cat)}
                 onChange={() => toggleCategory(cat)}
-                className="w-4 h-4 rounded border-gray-300 accent-orange-500 cursor-pointer"
+                className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 accent-orange-500 cursor-pointer"
               />
-              <span className="text-sm text-gray-600 group-hover:text-[#1e3a5f] transition">{cat}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300 group-hover:text-[#1e3a5f] dark:group-hover:text-blue-300 transition">{cat}</span>
             </label>
           ))}
         </div>
@@ -207,14 +207,14 @@ function ShopContent() {
 
       {/* Price Range */}
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">Price Range (₹)</h3>
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Price Range (₹)</h3>
         <div className="flex gap-2">
           <input
             type="number"
             placeholder="Min"
             value={pendingFilters.minPrice}
             onChange={(e) => setPendingFilters((p) => ({ ...p, minPrice: e.target.value }))}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
             min={0}
           />
           <input
@@ -222,7 +222,7 @@ function ShopContent() {
             placeholder="Max"
             value={pendingFilters.maxPrice}
             onChange={(e) => setPendingFilters((p) => ({ ...p, maxPrice: e.target.value }))}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
             min={0}
           />
         </div>
@@ -230,13 +230,13 @@ function ShopContent() {
 
       {/* Brand */}
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">Brand</h3>
+        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Brand</h3>
         <input
           type="text"
           placeholder="Search brand..."
           value={pendingFilters.brand}
           onChange={(e) => setPendingFilters((p) => ({ ...p, brand: e.target.value }))}
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+          className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
         />
       </div>
 
@@ -245,17 +245,15 @@ function ShopContent() {
         <label className="flex items-center gap-3 cursor-pointer">
           <div
             onClick={() => setPendingFilters((p) => ({ ...p, featured: !p.featured }))}
-            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-              pendingFilters.featured ? 'bg-orange-500' : 'bg-gray-200'
-            }`}
+            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${pendingFilters.featured ? 'bg-orange-500' : 'bg-gray-200 dark:bg-gray-600'
+              }`}
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-                pendingFilters.featured ? 'translate-x-5' : 'translate-x-0'
-              }`}
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${pendingFilters.featured ? 'translate-x-5' : 'translate-x-0'
+                }`}
             />
           </div>
-          <span className="text-sm font-medium text-gray-700">Featured only</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Featured only</span>
         </label>
       </div>
 
@@ -269,13 +267,21 @@ function ShopContent() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Page Header */}
-      <div className="bg-[#1e3a5f] text-white py-10 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-1">Shop Wholesale Products</h1>
-          <p className="text-blue-200 text-sm">
-            B2B wholesale marketplace — best prices for bulk orders
+      <div className="relative bg-[#1e3a5f] text-white py-16 px-4 overflow-hidden border-b border-white/10">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[#0f172a]/40 backdrop-blur-[2px] z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1e3a5f]/90 to-transparent z-10" />
+          <img src="https://www.the-future-of-commerce.com/wp-content/uploads/2020/01/thumbnail-d771a7f4e38fcf7614f297ea6c90f497-1200x370.jpeg" alt="Shop Background" className="w-full h-full object-cover opacity-80" />
+        </div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="inline-block border border-white/20 bg-white/10 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 shadow-sm">
+            B2B Marketplace
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3 drop-shadow-md tracking-tight">Shop Wholesale Products</h1>
+          <p className="text-white/80 text-base md:text-lg max-w-2xl drop-shadow-sm font-light">
+            Equip your business with top-quality materials. Best prices for bulk orders.
           </p>
         </div>
       </div>
@@ -292,12 +298,12 @@ function ShopContent() {
             placeholder="Search products by name, brand, category..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 bg-white shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+            className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-gray-100 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             >
               <FiX size={18} />
             </button>
@@ -306,12 +312,12 @@ function ShopContent() {
 
         {/* Mobile Filter Toggle Button */}
         <div className="flex items-center justify-between mb-4 md:hidden">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {loading ? 'Loading...' : `${totalProducts} products found`}
           </p>
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-[#1e3a5f] shadow-sm"
+            className="flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm font-medium text-[#1e3a5f] dark:text-blue-300 shadow-sm"
           >
             <FiFilter size={16} />
             Filters
@@ -329,7 +335,7 @@ function ShopContent() {
             {filters.categories.map((cat) => (
               <span
                 key={cat}
-                className="flex items-center gap-1 bg-orange-100 text-orange-700 text-xs font-medium px-3 py-1 rounded-full"
+                className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium px-3 py-1 rounded-full"
               >
                 {cat}
                 <button
@@ -399,7 +405,7 @@ function ShopContent() {
           {/* Product Grid */}
           <div className="flex-1 min-w-0">
             <div className="hidden md:flex items-center justify-between mb-4">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {loading ? 'Loading products...' : `${totalProducts} product${totalProducts !== 1 ? 's' : ''} found`}
               </p>
             </div>
@@ -408,11 +414,11 @@ function ShopContent() {
               <Loader />
             ) : products.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
                   <FiSearch size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-1">No products found</h3>
-                <p className="text-sm text-gray-500 max-w-xs">
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">No products found</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
                   Try adjusting your search or filters to find what you are looking for.
                 </p>
                 <button
@@ -436,7 +442,7 @@ function ShopContent() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                      className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
                     >
                       <FiChevronLeft size={16} />
                       Previous
@@ -447,12 +453,12 @@ function ShopContent() {
                         <>
                           <button
                             onClick={() => setCurrentPage(1)}
-                            className="w-9 h-9 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition"
+                            className="w-9 h-9 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                           >
                             1
                           </button>
                           {currentPage > 4 && (
-                            <span className="w-9 h-9 flex items-center justify-center text-gray-400 text-sm">
+                            <span className="w-9 h-9 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
                               …
                             </span>
                           )}
@@ -463,11 +469,10 @@ function ShopContent() {
                         <button
                           key={num}
                           onClick={() => setCurrentPage(num)}
-                          className={`w-9 h-9 rounded-lg text-sm font-medium border transition ${
-                            num === currentPage
+                          className={`w-9 h-9 rounded-lg text-sm font-medium border transition ${num === currentPage
                               ? 'bg-[#1e3a5f] text-white border-[#1e3a5f]'
-                              : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                          }`}
+                              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                            }`}
                         >
                           {num}
                         </button>
@@ -476,13 +481,13 @@ function ShopContent() {
                       {currentPage < totalPages - 2 && (
                         <>
                           {currentPage < totalPages - 3 && (
-                            <span className="w-9 h-9 flex items-center justify-center text-gray-400 text-sm">
+                            <span className="w-9 h-9 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
                               …
                             </span>
                           )}
                           <button
                             onClick={() => setCurrentPage(totalPages)}
-                            className="w-9 h-9 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition"
+                            className="w-9 h-9 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                           >
                             {totalPages}
                           </button>
@@ -493,7 +498,7 @@ function ShopContent() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
-                      className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                      className="flex items-center gap-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
                     >
                       Next
                       <FiChevronRight size={16} />
@@ -515,12 +520,12 @@ function ShopContent() {
             onClick={() => setSidebarOpen(false)}
           />
           {/* Drawer */}
-          <div className="relative ml-auto w-80 max-w-full h-full bg-white shadow-2xl flex flex-col overflow-y-auto">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <span className="font-semibold text-[#1e3a5f] text-base">Filter Products</span>
+          <div className="relative ml-auto w-80 max-w-full h-full bg-white dark:bg-gray-800 shadow-2xl flex flex-col overflow-y-auto">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+              <span className="font-semibold text-[#1e3a5f] dark:text-blue-300 text-base">Filter Products</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500"
+                className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
               >
                 <FiX size={22} />
               </button>

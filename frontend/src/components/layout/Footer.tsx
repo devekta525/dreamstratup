@@ -17,9 +17,12 @@ export default function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <h3 className="text-white text-xl font-extrabold mb-4">
-              Dream<span className="text-orange-400">Startup</span>
-            </h3>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png.png"
+              alt="DreamStartup"
+              className="h-20 w-auto object-contain mb-4"
+            />
             <p className="text-sm leading-relaxed text-gray-300/90">
               Apka Sapna, Humara Sahayog. Your one-stop platform for wholesale products, business startup kits, and local service providers.
             </p>

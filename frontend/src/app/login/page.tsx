@@ -61,24 +61,24 @@ export default function LoginPage() {
   // While checking auth state, show nothing to avoid flicker
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="w-8 h-8 border-4 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-md p-8">
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
             Dream<span className="text-orange-500">Startup</span>
           </h1>
-          <p className="mt-1 text-sm text-gray-500">Apka Sapna, Humara Sahayog</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">Apka Sapna, Humara Sahayog</p>
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6 text-center">
           Sign in to your account
         </h2>
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Email address
             </label>
@@ -99,7 +99,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Password
             </label>
@@ -119,7 +119,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
+              className="w-full rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 px-4 py-2.5 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent transition"
             />
           </div>
 
@@ -141,7 +141,7 @@ export default function LoginPage() {
         </form>
 
         {/* Register link */}
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
           Don&apos;t have an account?{' '}
           <Link
             href="/register"

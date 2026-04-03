@@ -8,10 +8,10 @@ export const productService = {
     api.get(`/products/${id}`),
 
   createProduct: (data: FormData) =>
-    api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    api.post('/products', data),
 
   updateProduct: (id: string, data: FormData) =>
-    api.put(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    api.put(`/products/${id}`, data),
 
   deleteProduct: (id: string) =>
     api.delete(`/products/${id}`),

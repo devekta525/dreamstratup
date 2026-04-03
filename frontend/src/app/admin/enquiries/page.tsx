@@ -82,12 +82,12 @@ export default function AdminEnquiriesPage() {
       if (filterResolved !== '') params.resolved = filterResolved;
 
       const res = await adminService.getEnquiries(params);
-      const data = res.data;
-      setEnquiries(data.enquiries ?? data.data ?? []);
+      const raw = res.data?.data ?? res.data;
+      setEnquiries(raw?.enquiries ?? raw?.data ?? []);
       setMeta({
-        total: data.total ?? 0,
-        page: data.page ?? page,
-        pages: data.pages ?? 1,
+        total: raw?.total ?? 0,
+        page: raw?.page ?? page,
+        pages: raw?.pages ?? 1,
       });
     } catch (err) {
       console.error('Failed to fetch enquiries', err);

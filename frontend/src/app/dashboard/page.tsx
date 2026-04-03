@@ -34,8 +34,8 @@ function StatCard({ icon: Icon, label, value, href, accent }: StatCardProps) {
       href={href}
       className={`group flex flex-col gap-4 rounded-2xl border p-6 transition hover:shadow-md ${
         accent
-          ? 'border-orange-200 bg-orange-50 hover:border-orange-400'
-          : 'border-gray-200 bg-white hover:border-[#1e3a5f]/40'
+          ? 'border-orange-200 bg-orange-50 hover:border-orange-400 dark:border-orange-700 dark:bg-orange-900/30'
+          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-[#1e3a5f]/40'
       }`}
     >
       <div
@@ -50,8 +50,8 @@ function StatCard({ icon: Icon, label, value, href, accent }: StatCardProps) {
       </div>
 
       <div>
-        <p className="text-2xl font-bold text-gray-800">{value}</p>
-        <p className="mt-0.5 text-sm text-gray-500">{label}</p>
+        <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
+        <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-300">{label}</p>
       </div>
 
       <span
@@ -122,7 +122,7 @@ export default function DashboardPage() {
   const savedCount = user.savedProducts?.length ?? 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -187,9 +187,9 @@ export default function DashboardPage() {
           )}
 
           {!ordersLoading && !ordersError && recentOrders.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
+            <div className="rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-14 text-center">
               <FiPackage size={40} className="mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-500 font-medium">No orders yet</p>
+              <p className="text-gray-500 dark:text-gray-300 font-medium">No orders yet</p>
               <p className="mt-1 text-sm text-gray-400">
                 Start shopping to place your first order.
               </p>
@@ -203,16 +203,16 @@ export default function DashboardPage() {
           )}
 
           {!ordersLoading && !ordersError && recentOrders.length > 0 && (
-            <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-100">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-900">
                     <tr>
                       {['Order #', 'Date', 'Items', 'Total', 'Status'].map(
                         (h) => (
                           <th
                             key={h}
-                            className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                            className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300"
                           >
                             {h}
                           </th>
@@ -220,26 +220,26 @@ export default function DashboardPage() {
                       )}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                     {recentOrders.map((order) => (
                       <tr
                         key={order._id}
-                        className="transition hover:bg-gray-50"
+                        className="transition hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
                         <td className="whitespace-nowrap px-5 py-4 text-sm font-semibold text-[#1e3a5f]">
                           #{order.orderNumber}
                         </td>
-                        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-500">
+                        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-500 dark:text-gray-300">
                           {new Date(order.createdAt).toLocaleDateString(
                             'en-IN',
                             { day: '2-digit', month: 'short', year: 'numeric' }
                           )}
                         </td>
-                        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+                        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600 dark:text-gray-300">
                           {order.items.length}{' '}
                           {order.items.length === 1 ? 'item' : 'items'}
                         </td>
-                        <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-gray-800">
+                        <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-gray-800 dark:text-gray-100">
                           ₹{order.totalAmount.toLocaleString('en-IN')}
                         </td>
                         <td className="whitespace-nowrap px-5 py-4">
