@@ -7,6 +7,26 @@ const Enquiry = require('../models/Enquiry.model');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiResponse = require('../utils/ApiResponse');
 
+// GET /api/admin/users
+exports.getUsers = asyncHandler(async (req, res) => {
+  const { role, search, page = 1, limit = 20 } = req.query;
+  const filter = {};
+  if (role && role !== 'all') filter.role = role;
+  if (search) {
+    filter.$or = [
+      { name: new RegExp(search, 'i') },
+      { email: new RegExp(search, 'i') },
+      { phone: new RegExp(search, 'i') },
+    ];
+  }
+  const skip = (Number(page) - 1) * Number(limit);
+  const [users, total] = await Promise.all([
+    User.find(filter).sort('-createdAt').skip(skip).limit(Number(limit)),
+    User.countDocuments(filter),
+  ]);
+  res.json(new ApiResponse(200, { users, total, page: Number(page), pages: Math.ceil(total / Number(limit)) }, 'Users fetched'));
+});
+
 exports.getDashboardStats = asyncHandler(async (req, res) => {
   const [
     totalUsers,

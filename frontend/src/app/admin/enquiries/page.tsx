@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { FiDownload } from 'react-icons/fi';
 import { adminService } from '@/services/admin.service';
+import { exportToExcel } from '@/utils/exportExcel';
 import StatusBadge from '@/components/common/StatusBadge';
 import Loader from '@/components/common/Loader';
 
@@ -140,6 +142,21 @@ export default function AdminEnquiriesPage() {
     setPage(1);
   };
 
+  const handleExport = () => {
+    if (enquiries.length === 0) return;
+    const data = enquiries.map((e) => ({
+      Name: e.name,
+      Phone: e.phone,
+      Email: e.email,
+      Type: e.type,
+      Message: e.message,
+      Reference: e.productRef?.name ?? e.kitRef?.name ?? '',
+      Status: e.isResolved ? 'Resolved' : 'Pending',
+      Date: new Date(e.createdAt).toLocaleDateString('en-IN'),
+    }));
+    exportToExcel(data, 'enquiries');
+  };
+
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
@@ -176,9 +193,19 @@ export default function AdminEnquiriesPage() {
             <option value="true">Resolved</option>
           </select>
 
-          <span className="ml-auto text-sm text-gray-500">
-            {meta.total} enquir{meta.total !== 1 ? 'ies' : 'y'} found
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-sm text-gray-500">
+              {meta.total} enquir{meta.total !== 1 ? 'ies' : 'y'} found
+            </span>
+            <button
+              onClick={handleExport}
+              disabled={enquiries.length === 0}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+            >
+              <FiDownload size={16} />
+              Export Excel
+            </button>
+          </div>
         </div>
 
         {/* Table */}

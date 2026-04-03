@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiChevronLeft, FiChevronRight, FiSearch } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiX, FiChevronLeft, FiChevronRight, FiSearch, FiDownload } from 'react-icons/fi';
 import { productService } from '@/services/product.service';
+import { exportToExcel } from '@/utils/exportExcel';
 import { Product } from '@/types';
 import Loader from '@/components/common/Loader';
 
@@ -511,6 +512,20 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleExport = () => {
+    if (products.length === 0) return;
+    const data = products.map((p) => ({
+      Title: p.title,
+      Category: p.category,
+      Brand: p.brand || '',
+      'Wholesale Price': p.wholesalePrice,
+      MOQ: p.moq,
+      Stock: p.stock,
+      Featured: p.featured ? 'Yes' : 'No',
+    }));
+    exportToExcel(data, 'products');
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -521,13 +536,23 @@ export default function AdminProductsPage() {
           <h1 className="text-2xl font-bold text-[#1e3a5f]">Products</h1>
           <p className="mt-1 text-sm text-gray-500">Manage your wholesale product catalogue.</p>
         </div>
-        <button
-          onClick={openAdd}
-          className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 active:scale-95"
-        >
-          <FiPlus size={18} />
-          Add Product
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            disabled={products.length === 0}
+            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+          >
+            <FiDownload size={18} />
+            Export Excel
+          </button>
+          <button
+            onClick={openAdd}
+            className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 active:scale-95"
+          >
+            <FiPlus size={18} />
+            Add Product
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

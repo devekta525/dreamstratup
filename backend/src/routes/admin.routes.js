@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
-const { getDashboardStats } = require('../controllers/admin.controller');
+const { getDashboardStats, getUsers } = require('../controllers/admin.controller');
 const { getAllOrders, updateOrderStatus } = require('../controllers/order.controller');
 const { getAllApplications, updateApplication } = require('../controllers/startupApplication.controller');
 const { getAllProviders, approveProvider } = require('../controllers/provider.controller');
@@ -13,6 +13,7 @@ router.use(protect);
 router.use(authorize('admin'));
 
 router.get('/dashboard', getDashboardStats);
+router.get('/users', getUsers);
 
 router.get('/orders', getAllOrders);
 router.put('/orders/:id/status', updateOrderStatus);

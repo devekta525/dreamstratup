@@ -8,8 +8,10 @@ import {
   FiUser,
   FiCheckCircle,
   FiXCircle,
+  FiDownload,
 } from 'react-icons/fi';
 
+import { exportToExcel } from '@/utils/exportExcel';
 import { adminService } from '@/services/admin.service';
 import StatusBadge from '@/components/common/StatusBadge';
 import Loader from '@/components/common/Loader';
@@ -115,6 +117,24 @@ export default function AdminProvidersPage() {
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
+  const handleExport = () => {
+    if (providers.length === 0) return;
+    const data = providers.map((p) => {
+      const pUser = providerUser(p);
+      return {
+        Name: pUser?.name || '',
+        Email: pUser?.email || '',
+        Phone: pUser?.phone || '',
+        Profession: p.profession,
+        Experience: p.experience || '',
+        City: p.city || '',
+        'Commission Rate': p.commissionRate ?? '',
+        Approved: p.isApproved ? 'Yes' : 'No',
+      };
+    });
+    exportToExcel(data, 'service-providers');
+  };
+
   function updateRowState(id: string, patch: Partial<RowState>) {
     setRowStates((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
   }
@@ -212,9 +232,19 @@ export default function AdminProvidersPage() {
             <option value="false">Not Approved</option>
           </select>
 
-          <span className="ml-auto text-sm text-gray-400">
-            {total} provider{total !== 1 ? 's' : ''} found
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-sm text-gray-400">
+              {total} provider{total !== 1 ? 's' : ''} found
+            </span>
+            <button
+              onClick={handleExport}
+              disabled={providers.length === 0}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+            >
+              <FiDownload size={16} />
+              Export Excel
+            </button>
+          </div>
         </div>
 
         {/* Loader / Error */}

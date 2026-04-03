@@ -3,6 +3,8 @@ import api from '@/lib/api';
 export const adminService = {
   getDashboard: () => api.get('/admin/dashboard'),
 
+  getUsers: (params?: Record<string, string | number>) => api.get('/admin/users', { params }),
+
   getOrders: (params?: Record<string, string | number>) => api.get('/admin/orders', { params }),
   updateOrderStatus: (id: string, data: Record<string, string>) => api.put(`/admin/orders/${id}/status`, data),
 

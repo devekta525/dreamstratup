@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation';
 import {
   FiChevronDown,
   FiChevronUp,
+  FiDownload,
   FiFilter,
   FiSave,
   FiPackage,
+  FiFileText,
 } from 'react-icons/fi';
 
+import { exportToExcel } from '@/utils/exportExcel';
 import { adminService } from '@/services/admin.service';
 import StatusBadge from '@/components/common/StatusBadge';
 import Loader from '@/components/common/Loader';
@@ -81,69 +84,201 @@ function SelectField<T extends string>({
   );
 }
 
+function generateInvoice(order: AdminOrder) {
+  const invoiceDate = new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const addr = order.shippingAddress;
+
+  const itemRows = order.items.map((item, i) =>
+    `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center">${i + 1}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee">${item.title}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center">${item.quantity}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right">₹${item.price.toLocaleString('en-IN')}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:600">₹${(item.quantity * item.price).toLocaleString('en-IN')}</td>
+    </tr>`
+  ).join('');
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><title>Invoice - ${order.orderNumber}</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; padding:40px; color:#333; }
+  .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px; border-bottom:3px solid #1e3a5f; padding-bottom:20px; }
+  .logo { font-size:24px; font-weight:800; color:#1e3a5f; }
+  .logo span { color:#f97316; }
+  .invoice-title { font-size:28px; font-weight:800; color:#1e3a5f; text-align:right; }
+  .invoice-meta { text-align:right; font-size:13px; color:#666; margin-top:5px; }
+  .section { margin-bottom:25px; }
+  .section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#999; margin-bottom:8px; }
+  .address { font-size:13px; line-height:1.7; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th { background:#1e3a5f; color:#fff; padding:10px 12px; text-align:left; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+  th:first-child { border-radius:6px 0 0 0; }
+  th:last-child { border-radius:0 6px 0 0; text-align:right; }
+  th:nth-child(3), th:nth-child(4) { text-align:center; }
+  td { font-size:13px; }
+  .total-row td { border-top:2px solid #1e3a5f; font-size:16px; font-weight:800; padding:14px 12px; }
+  .footer { margin-top:40px; text-align:center; font-size:12px; color:#999; border-top:1px solid #eee; padding-top:20px; }
+  .status { display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; }
+  .badge-row { display:flex; gap:10px; margin-top:10px; }
+  @media print { body { padding:20px; } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="logo">Dream<span>Startup</span></div>
+      <div style="font-size:11px;color:#999;margin-top:2px">B2B Wholesale Platform</div>
+    </div>
+    <div>
+      <div class="invoice-title">INVOICE</div>
+      <div class="invoice-meta">
+        <strong>#${order.orderNumber}</strong><br/>
+        Date: ${invoiceDate}
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:40px;margin-bottom:25px;">
+    <div class="section" style="flex:1">
+      <div class="section-title">Bill To</div>
+      <div class="address">
+        <strong>${order.user?.name || '—'}</strong><br/>
+        ${order.user?.email || ''}<br/>
+        ${order.user?.phone || ''}
+      </div>
+    </div>
+    <div class="section" style="flex:1">
+      <div class="section-title">Ship To</div>
+      <div class="address">
+        ${addr.address}<br/>
+        ${addr.city}, ${addr.state} — ${addr.pincode}<br/>
+        Phone: ${addr.phone}
+      </div>
+    </div>
+    <div class="section" style="flex:1">
+      <div class="section-title">Details</div>
+      <div class="address">
+        <strong>Payment:</strong> ${order.paymentMethod === 'cash' ? 'Cash on Delivery' : 'Online / On Call'}<br/>
+        <strong>Order Status:</strong> ${order.orderStatus}<br/>
+        <strong>Payment Status:</strong> ${order.paymentStatus}
+      </div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align:center;width:50px">#</th>
+        <th>Item</th>
+        <th style="text-align:center;width:80px">Qty</th>
+        <th style="text-align:center;width:100px">Price</th>
+        <th style="text-align:right;width:120px">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+      <tr class="total-row">
+        <td colspan="4" style="text-align:right;padding-right:12px">Grand Total</td>
+        <td style="text-align:right;color:#1e3a5f">₹${order.totalAmount.toLocaleString('en-IN')}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  ${order.notes ? `<div style="margin-top:20px;padding:12px 16px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;font-size:13px"><strong style="color:#ea580c">Note:</strong> ${order.notes}</div>` : ''}
+
+  <div class="footer">
+    <p>Thank you for your business!</p>
+    <p>DreamStartup — Apka Sapna, Humara Sahayog</p>
+  </div>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+    setTimeout(() => win.print(), 500);
+  }
+}
+
 function ExpandedOrderRow({ order }: { order: AdminOrder }) {
   return (
-    <div className="grid gap-6 bg-[#1e3a5f]/[0.03] px-6 py-5 md:grid-cols-2">
-      {/* Items */}
-      <div>
-        <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Order Items
-        </h4>
-        <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white overflow-hidden">
-          {order.items.map((item: OrderItem, idx: number) => (
-            <div key={idx} className="flex items-center gap-3 px-4 py-3">
-              {item.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={item.image.startsWith('http') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${item.image.startsWith('/') ? '' : '/'}${item.image}`}
-                  alt={item.title}
-                  className="h-10 w-10 rounded-lg object-cover border border-gray-100"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                  <FiPackage size={16} className="text-gray-400" />
+    <div className="bg-[#1e3a5f]/[0.03] px-6 py-5">
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Items */}
+        <div>
+          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Order Items
+          </h4>
+          <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white overflow-hidden">
+            {order.items.map((item: OrderItem, idx: number) => (
+              <div key={idx} className="flex items-center gap-3 px-4 py-3">
+                {item.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.image.startsWith('http') ? item.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${item.image.startsWith('/') ? '' : '/'}${item.image}`}
+                    alt={item.title}
+                    className="h-10 w-10 rounded-lg object-cover border border-gray-100"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                    <FiPackage size={16} className="text-gray-400" />
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-gray-800">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Qty: {item.quantity} &times; ₹{item.price.toLocaleString('en-IN')}
+                  </p>
                 </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-800">
-                  {item.title}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Qty: {item.quantity} &times; ₹{item.price.toLocaleString('en-IN')}
-                </p>
+                <span className="whitespace-nowrap text-sm font-semibold text-[#1e3a5f]">
+                  ₹{(item.quantity * item.price).toLocaleString('en-IN')}
+                </span>
               </div>
-              <span className="whitespace-nowrap text-sm font-semibold text-[#1e3a5f]">
-                ₹{(item.quantity * item.price).toLocaleString('en-IN')}
-              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Shipping Address */}
+        <div>
+          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Shipping Address
+          </h4>
+          <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 text-sm text-gray-700 space-y-1">
+            <p className="font-medium text-gray-800">{order.user?.name}</p>
+            <p>{order.shippingAddress.address}</p>
+            <p>
+              {order.shippingAddress.city}, {order.shippingAddress.state} —{' '}
+              {order.shippingAddress.pincode}
+            </p>
+            <p className="mt-1 font-medium text-[#1e3a5f]">
+              {order.shippingAddress.phone}
+            </p>
+          </div>
+
+          {order.notes && (
+            <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50 px-5 py-3 text-sm text-gray-700">
+              <span className="font-semibold text-orange-600">Note: </span>
+              {order.notes}
             </div>
-          ))}
+          )}
         </div>
       </div>
 
-      {/* Shipping Address */}
-      <div>
-        <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Shipping Address
-        </h4>
-        <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 text-sm text-gray-700 space-y-1">
-          <p className="font-medium text-gray-800">{order.user?.name}</p>
-          <p>{order.shippingAddress.address}</p>
-          <p>
-            {order.shippingAddress.city}, {order.shippingAddress.state} —{' '}
-            {order.shippingAddress.pincode}
-          </p>
-          <p className="mt-1 font-medium text-[#1e3a5f]">
-            {order.shippingAddress.phone}
-          </p>
-        </div>
-
-        {order.notes && (
-          <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50 px-5 py-3 text-sm text-gray-700">
-            <span className="font-semibold text-orange-600">Note: </span>
-            {order.notes}
-          </div>
-        )}
+      {/* Invoice Button */}
+      <div className="mt-4 flex justify-end">
+        <button
+          onClick={() => generateInvoice(order)}
+          className="inline-flex items-center gap-2 rounded-lg bg-[#1e3a5f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16304f] active:scale-95"
+        >
+          <FiFileText size={16} />
+          Download Invoice
+        </button>
       </div>
     </div>
   );
@@ -262,6 +397,22 @@ export default function AdminOrdersPage() {
     }
   }
 
+  const handleExport = () => {
+    if (orders.length === 0) return;
+    const data = orders.map((o) => ({
+      'Order #': o.orderNumber,
+      Customer: o.user?.name || '',
+      Email: o.user?.email || '',
+      Phone: o.user?.phone || '',
+      Items: o.items.length,
+      Total: o.totalAmount,
+      'Order Status': o.orderStatus,
+      'Payment Status': o.paymentStatus,
+      Date: new Date(o.createdAt).toLocaleDateString('en-IN'),
+    }));
+    exportToExcel(data, 'orders');
+  };
+
   // ── Render ──────────────────────────────────────────────────────────────────
 
   if (authLoading) {
@@ -304,9 +455,19 @@ export default function AdminOrdersPage() {
               </option>
             ))}
           </select>
-          <span className="ml-auto text-sm text-gray-400">
-            {total} order{total !== 1 ? 's' : ''} found
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-sm text-gray-400">
+              {total} order{total !== 1 ? 's' : ''} found
+            </span>
+            <button
+              onClick={handleExport}
+              disabled={orders.length === 0}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:opacity-40"
+            >
+              <FiDownload size={16} />
+              Export Excel
+            </button>
+          </div>
         </div>
 
         {/* Loader / Error */}
