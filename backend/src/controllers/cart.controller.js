@@ -6,7 +6,7 @@ const ApiResponse = require('../utils/ApiResponse');
 
 // GET /api/cart
 exports.getCart = asyncHandler(async (req, res) => {
-  let cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'title images wholesalePrice moq stock');
+  let cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'title images minPrice maxPrice moq stock');
   if (!cart) cart = { items: [], totalAmount: 0 };
   res.json(new ApiResponse(200, cart, 'Cart fetched'));
 });
@@ -18,7 +18,7 @@ exports.addToCart = asyncHandler(async (req, res) => {
   if (!product) throw new ApiError(404, 'Product not found');
   if (quantity < product.moq) throw new ApiError(400, `Minimum order quantity is ${product.moq}`);
 
-  let price = product.wholesalePrice;
+  let price = product.minPrice;
   if (product.bulkPricingTiers && product.bulkPricingTiers.length > 0) {
     const tier = product.bulkPricingTiers.find(t => quantity >= t.minQty && (!t.maxQty || quantity <= t.maxQty));
     if (tier) price = tier.price;
@@ -37,7 +37,7 @@ exports.addToCart = asyncHandler(async (req, res) => {
 
   cart.calculateTotal();
   await cart.save();
-  await cart.populate('items.product', 'title images wholesalePrice moq stock');
+  await cart.populate('items.product', 'title images minPrice maxPrice moq stock');
   res.json(new ApiResponse(200, cart, 'Cart updated'));
 });
 

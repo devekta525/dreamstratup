@@ -25,28 +25,40 @@ const LIMIT = 20;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+interface TierFormData {
+  minQty: string;
+  maxQty: string;
+  price: string;
+}
+
 interface ProductFormData {
   title: string;
   description: string;
   category: string;
   brand: string;
-  wholesalePrice: string;
+  minPrice: string;
+  maxPrice: string;
   moq: string;
   stock: string;
   featured: boolean;
   images: FileList | null;
+  bulkPricingTiers: TierFormData[];
 }
+
+const EMPTY_TIER: TierFormData = { minQty: '', maxQty: '', price: '' };
 
 const EMPTY_FORM: ProductFormData = {
   title: '',
   description: '',
   category: '',
   brand: '',
-  wholesalePrice: '',
+  minPrice: '',
+  maxPrice: '',
   moq: '',
   stock: '',
   featured: false,
   images: null,
+  bulkPricingTiers: [{ ...EMPTY_TIER }],
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -57,10 +69,18 @@ function buildFormData(data: ProductFormData): FormData {
   fd.append('description', data.description.trim());
   fd.append('category', data.category);
   fd.append('brand', data.brand.trim());
-  fd.append('wholesalePrice', data.wholesalePrice);
+  fd.append('minPrice', data.minPrice);
+  fd.append('maxPrice', data.maxPrice);
   fd.append('moq', data.moq);
   fd.append('stock', data.stock);
   fd.append('featured', String(data.featured));
+  // Send bulk pricing tiers as JSON
+  const validTiers = data.bulkPricingTiers.filter(t => t.minQty && t.price);
+  fd.append('bulkPricingTiers', JSON.stringify(validTiers.map(t => ({
+    minQty: Number(t.minQty),
+    maxQty: t.maxQty ? Number(t.maxQty) : undefined,
+    price: Number(t.price),
+  }))));
   if (data.images) {
     Array.from(data.images).forEach((file) => fd.append('images', file));
   }
@@ -124,11 +144,19 @@ function ProductModal({
           description: editProduct.description,
           category: editProduct.category,
           brand: editProduct.brand,
-          wholesalePrice: String(editProduct.wholesalePrice),
+          minPrice: String(editProduct.minPrice),
+          maxPrice: String(editProduct.maxPrice),
           moq: String(editProduct.moq),
           stock: String(editProduct.stock),
           featured: editProduct.featured,
           images: null,
+          bulkPricingTiers: editProduct.bulkPricingTiers?.length
+            ? editProduct.bulkPricingTiers.map(t => ({
+                minQty: String(t.minQty),
+                maxQty: t.maxQty ? String(t.maxQty) : '',
+                price: String(t.price),
+              }))
+            : [{ ...EMPTY_TIER }],
         }
       : EMPTY_FORM
   );
@@ -150,7 +178,7 @@ function ProductModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.category || !form.wholesalePrice || !form.moq || !form.stock) {
+    if (!form.title || !form.category || !form.minPrice || !form.maxPrice || !form.moq || !form.stock) {
       toast.error('Please fill in all required fields.');
       return;
     }
@@ -258,15 +286,33 @@ function ProductModal({
               />
             </div>
 
-            {/* Wholesale Price */}
+            {/* Min Price */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Wholesale Price (₹) <span className="text-red-500">*</span>
+                Min Price (₹) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
-                name="wholesalePrice"
-                value={form.wholesalePrice}
+                name="minPrice"
+                value={form.minPrice}
+                onChange={handleChange}
+                required
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
+              />
+            </div>
+
+            {/* Max Price */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Max Price (₹) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                name="maxPrice"
+                value={form.maxPrice}
                 onChange={handleChange}
                 required
                 min="0"
@@ -279,7 +325,7 @@ function ProductModal({
             {/* MOQ */}
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                MOQ <span className="text-red-500">*</span>
+                MOQ (min 5) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -287,8 +333,8 @@ function ProductModal({
                 value={form.moq}
                 onChange={handleChange}
                 required
-                min="1"
-                placeholder="Minimum order quantity"
+                min="5"
+                placeholder="Minimum order quantity (min 5)"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
               />
             </div>
@@ -308,6 +354,75 @@ function ProductModal({
                 placeholder="Available units"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
               />
+            </div>
+
+            {/* ─── Bulk Pricing Tiers ─── */}
+            <div className="sm:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Bulk Pricing Tiers
+              </label>
+              <div className="space-y-2">
+                {form.bulkPricingTiers.map((tier, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min Qty"
+                      value={tier.minQty}
+                      min="1"
+                      onChange={(e) => {
+                        const tiers = [...form.bulkPricingTiers];
+                        tiers[idx] = { ...tiers[idx], minQty: e.target.value };
+                        setForm((prev) => ({ ...prev, bulkPricingTiers: tiers }));
+                      }}
+                      className="w-1/4 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 outline-none focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max Qty (optional)"
+                      value={tier.maxQty}
+                      min="1"
+                      onChange={(e) => {
+                        const tiers = [...form.bulkPricingTiers];
+                        tiers[idx] = { ...tiers[idx], maxQty: e.target.value };
+                        setForm((prev) => ({ ...prev, bulkPricingTiers: tiers }));
+                      }}
+                      className="w-1/4 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 outline-none focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Price (₹)"
+                      value={tier.price}
+                      min="0"
+                      step="0.01"
+                      onChange={(e) => {
+                        const tiers = [...form.bulkPricingTiers];
+                        tiers[idx] = { ...tiers[idx], price: e.target.value };
+                        setForm((prev) => ({ ...prev, bulkPricingTiers: tiers }));
+                      }}
+                      className="w-1/4 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-800 outline-none focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (form.bulkPricingTiers.length <= 1) return;
+                        const tiers = form.bulkPricingTiers.filter((_, i) => i !== idx);
+                        setForm((prev) => ({ ...prev, bulkPricingTiers: tiers }));
+                      }}
+                      disabled={form.bulkPricingTiers.length <= 1}
+                      className="rounded-lg p-2 text-red-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                    >
+                      <FiTrash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setForm((prev) => ({ ...prev, bulkPricingTiers: [...prev.bulkPricingTiers, { ...EMPTY_TIER }] }))}
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1e3a5f] hover:text-[#16304f] transition"
+              >
+                <FiPlus size={14} /> Add Tier
+              </button>
             </div>
 
             {/* Featured */}
@@ -518,7 +633,8 @@ export default function AdminProductsPage() {
       Title: p.title,
       Category: p.category,
       Brand: p.brand || '',
-      'Wholesale Price': p.wholesalePrice,
+      'Min Price': p.minPrice,
+      'Max Price': p.maxPrice,
       MOQ: p.moq,
       Stock: p.stock,
       Featured: p.featured ? 'Yes' : 'No',
@@ -662,7 +778,9 @@ export default function AdminProductsPage() {
 
                     {/* Price */}
                     <td className="px-4 py-3 font-semibold text-[#1e3a5f]">
-                      {formatPrice(product.wholesalePrice)}
+                      {product.minPrice === product.maxPrice
+                        ? formatPrice(product.minPrice)
+                        : `${formatPrice(product.minPrice)}–${formatPrice(product.maxPrice)}`}
                     </td>
 
                     {/* MOQ */}

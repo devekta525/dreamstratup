@@ -12,9 +12,8 @@ exports.getProducts = asyncHandler(async (req, res) => {
   if (brand) filter.brand = new RegExp(brand, 'i');
   if (featured === 'true') filter.featured = true;
   if (minPrice || maxPrice) {
-    filter.wholesalePrice = {};
-    if (minPrice) filter.wholesalePrice.$gte = Number(minPrice);
-    if (maxPrice) filter.wholesalePrice.$lte = Number(maxPrice);
+    if (minPrice) filter.minPrice = { $gte: Number(minPrice) };
+    if (maxPrice) filter.maxPrice = { $lte: Number(maxPrice) };
   }
   if (search) filter.$text = { $search: search };
 
@@ -40,6 +39,9 @@ exports.createProduct = asyncHandler(async (req, res) => {
   if (req.files && req.files.length > 0) {
     req.body.images = req.files.map(f => `/uploads/${f.filename}`);
   }
+  if (typeof req.body.bulkPricingTiers === 'string') {
+    req.body.bulkPricingTiers = JSON.parse(req.body.bulkPricingTiers);
+  }
   const product = await Product.create(req.body);
   res.status(201).json(new ApiResponse(201, product, 'Product created'));
 });
@@ -48,6 +50,9 @@ exports.createProduct = asyncHandler(async (req, res) => {
 exports.updateProduct = asyncHandler(async (req, res) => {
   if (req.files && req.files.length > 0) {
     req.body.images = req.files.map(f => `/uploads/${f.filename}`);
+  }
+  if (typeof req.body.bulkPricingTiers === 'string') {
+    req.body.bulkPricingTiers = JSON.parse(req.body.bulkPricingTiers);
   }
   const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
   if (!product) throw new ApiError(404, 'Product not found');

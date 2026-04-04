@@ -8,11 +8,9 @@ export default function ProductCard({ product }: { product: Product }) {
       : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${product.images[0].startsWith('/') ? '' : '/'}${product.images[0]}`
     : '';
 
-  const compareAtPrice = Math.round(product.wholesalePrice * 1.2);
-  const discountPercent = Math.max(
-    0,
-    Math.min(99, Math.round(((compareAtPrice - product.wholesalePrice) / compareAtPrice) * 100))
-  );
+  const priceRange = product.minPrice === product.maxPrice
+    ? `₹${product.minPrice.toLocaleString('en-IN')}`
+    : `₹${product.minPrice.toLocaleString('en-IN')}–${product.maxPrice.toLocaleString('en-IN')}`;
 
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
@@ -31,11 +29,6 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="absolute left-4 top-4 flex flex-col gap-1">
-          {discountPercent > 0 && (
-            <span className="inline-flex items-center justify-center h-5 px-2 rounded-md bg-[#2bbef9] text-white text-[10px] font-bold">
-              {discountPercent}%
-            </span>
-          )}
           {product.featured && (
             <span className="inline-flex items-center justify-center h-5 px-2 rounded-md bg-gray-800 text-white text-[10px] font-bold">
               RECOMMENDED
@@ -56,12 +49,13 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-xs text-gray-400 dark:text-gray-300 line-through">
-            ₹{compareAtPrice.toLocaleString('en-IN')}
-          </span>
           <span className="text-sm font-extrabold text-[#d51243]">
-            ₹{product.wholesalePrice.toLocaleString('en-IN')}
+            {priceRange}
           </span>
+        </div>
+
+        <div className="mt-1 text-[10px] font-semibold text-gray-500">
+          MOQ: {product.moq} units
         </div>
 
         <div className="mt-3">

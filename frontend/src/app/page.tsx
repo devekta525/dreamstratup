@@ -428,8 +428,11 @@ export default function HomePage() {
                       )}
 
                       <div className="mt-4">
-                        <div className="text-xs text-gray-400 dark:text-gray-500 line-through">₹{Math.round(products[0].wholesalePrice * 1.2).toLocaleString('en-IN')}</div>
-                        <div className="text-xl font-extrabold text-[#d51243]">₹{products[0].wholesalePrice.toLocaleString('en-IN')}</div>
+                        <div className="text-xl font-extrabold text-[#d51243]">
+                          {products[0].minPrice === products[0].maxPrice
+                            ? `₹${products[0].minPrice.toLocaleString('en-IN')}`
+                            : `₹${products[0].minPrice.toLocaleString('en-IN')}–${products[0].maxPrice.toLocaleString('en-IN')}`}
+                        </div>
                         <div className="mt-2 text-[13px] font-semibold text-gray-800 dark:text-gray-200 line-clamp-2">{products[0].title}</div>
                         <div className="mt-1 text-[10px] font-semibold tracking-wide text-green-600">
                           {products[0].stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}

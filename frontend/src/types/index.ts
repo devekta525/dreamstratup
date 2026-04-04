@@ -31,13 +31,25 @@ export interface Product {
   subcategory?: string;
   brand: string;
   images: string[];
-  wholesalePrice: number;
+  minPrice: number;
+  maxPrice: number;
   bulkPricingTiers: BulkPricingTier[];
   moq: number;
   stock: number;
   isActive: boolean;
   featured: boolean;
+  avgRating: number;
+  numReviews: number;
   specifications?: Record<string, string>;
+  createdAt: string;
+}
+
+export interface Review {
+  _id: string;
+  product: string;
+  user: { _id: string; name: string; profileImage?: string };
+  rating: number;
+  comment: string;
   createdAt: string;
 }
 

@@ -17,11 +17,9 @@ export default function LoginPage() {
   // If already logged in, redirect away
   useEffect(() => {
     if (!loading && user) {
-      if (user.role === 'admin') {
-        router.replace('/admin');
-      } else if (user.role === 'vendor') {
+      if (user.role === 'vendor') {
         router.replace('/provider/dashboard');
-      } else {
+      } else if (user.role === 'customer') {
         router.replace('/dashboard');
       }
     }
@@ -35,14 +33,10 @@ export default function LoginPage() {
     }
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
-      // login updates context; redirect handled in useEffect above
-      // but we also push immediately after login resolves
+      await login(email.trim(), password, 'user');
       const savedUser = JSON.parse(localStorage.getItem('user') || 'null');
       if (savedUser) {
-        if (savedUser.role === 'admin') {
-          router.push('/admin');
-        } else if (savedUser.role === 'vendor') {
+        if (savedUser.role === 'vendor') {
           router.push('/provider/dashboard');
         } else {
           router.push('/dashboard');

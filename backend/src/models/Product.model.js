@@ -15,12 +15,15 @@ const productSchema = new mongoose.Schema({
   subcategory: { type: String, default: '' },
   brand: { type: String, default: '' },
   images: [{ type: String }],
-  wholesalePrice: { type: Number, required: [true, 'Wholesale price is required'] },
+  minPrice: { type: Number, required: [true, 'Minimum price is required'] },
+  maxPrice: { type: Number, required: [true, 'Maximum price is required'] },
   bulkPricingTiers: [bulkPricingTierSchema],
-  moq: { type: Number, required: true, default: 1 },
+  moq: { type: Number, required: true, default: 5, min: [5, 'Minimum order quantity cannot be less than 5'] },
   stock: { type: Number, required: true, default: 0 },
   isActive: { type: Boolean, default: true },
   featured: { type: Boolean, default: false },
+  avgRating: { type: Number, default: 0 },
+  numReviews: { type: Number, default: 0 },
   specifications: { type: Map, of: String },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
@@ -32,7 +35,7 @@ productSchema.pre('save', function(next) {
   next();
 });
 
-productSchema.index({ category: 1, wholesalePrice: 1 });
+productSchema.index({ category: 1, minPrice: 1 });
 productSchema.index({ title: 'text', description: 'text', brand: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);

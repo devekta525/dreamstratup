@@ -14,16 +14,10 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // If already logged in, redirect away
+  // If already logged in as admin, redirect to admin dashboard
   useEffect(() => {
-    if (!loading && user) {
-      if (user.role === 'admin') {
-        router.replace('/admin');
-      } else if (user.role === 'vendor') {
-        router.replace('/provider/dashboard');
-      } else {
-        router.replace('/dashboard');
-      }
+    if (!loading && user && user.role === 'admin') {
+      router.replace('/admin');
     }
   }, [user, loading, router]);
 
@@ -35,18 +29,8 @@ export default function AdminLoginPage() {
     }
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
-      // login updates context; redirect handled in useEffect above
-      const savedUser = JSON.parse(localStorage.getItem('user') || 'null');
-      if (savedUser) {
-        if (savedUser.role === 'admin') {
-          router.push('/admin');
-        } else if (savedUser.role === 'vendor') {
-          router.push('/provider/dashboard');
-        } else {
-          router.push('/dashboard');
-        }
-      }
+      await login(email.trim(), password, 'admin');
+      router.push('/admin');
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data

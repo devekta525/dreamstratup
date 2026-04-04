@@ -176,7 +176,9 @@ export default function Navbar() {
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs text-gray-400">{product.category}</span>
                   <span className="text-sm font-bold text-[#d51243]">
-                    ₹{product.wholesalePrice.toLocaleString('en-IN')}
+                    {product.minPrice === product.maxPrice
+                      ? `₹${product.minPrice.toLocaleString('en-IN')}`
+                      : `₹${product.minPrice.toLocaleString('en-IN')}–${product.maxPrice.toLocaleString('en-IN')}`}
                   </span>
                 </div>
               </div>
@@ -216,7 +218,7 @@ export default function Navbar() {
         {/* Left: Logo */}
         <Link href="/" className="flex items-center shrink-0 group">
           <img
-            src="logo.png.png"
+            src="/logo.png.png"
             alt="DreamStartup"
             className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
           />

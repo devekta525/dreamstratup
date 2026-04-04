@@ -18,13 +18,21 @@ exports.register = asyncHandler(async (req, res) => {
 
 // POST /api/auth/login
 exports.login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, loginType } = req.body;
 
   const user = await User.findOne({ email }).select('+password');
   if (!user) throw new ApiError(401, 'Invalid credentials');
 
   const isMatch = await user.comparePassword(password);
   if (!isMatch) throw new ApiError(401, 'Invalid credentials');
+
+  // Enforce login route restrictions
+  if (loginType === 'admin' && user.role !== 'admin') {
+    throw new ApiError(403, 'Access denied. This login is for admin only.');
+  }
+  if (loginType === 'user' && user.role === 'admin') {
+    throw new ApiError(403, 'Admin accounts must use the admin login page.');
+  }
 
   const token = user.generateToken();
   res.json(new ApiResponse(200, { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } }, 'Login successful'));
