@@ -121,17 +121,26 @@ export default function ContactPage() {
             {/* Direct Contact Info */}
             <div className="lg:w-1/3 flex flex-col justify-center gap-6 lg:border-l border-slate-100 dark:border-gray-700 lg:pl-12 pt-8 lg:pt-0">
               {[
-                { icon: <FiPhone />, title: 'Call Us', val: '+91 98765 43210' },
-                { icon: <FiMail />, title: 'Email Us', val: 'hello@dreamstartup.in' },
-                { icon: <FiMapPin />, title: 'Visit Us', val: 'MG Road, Jaipur, 302001' },
+                { icon: <FiPhone />, title: 'Call Us', val: '+91 73728 81290' },
+                { icon: <FiMail />, title: 'Email Us', val: 'dreamsstartups@gmail.com' },
+                { icon: <FiMapPin />, title: 'Visit Us', val: (
+                  <>
+                    <span className="block mb-1.5">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">Address:</span> New Area Gali no-07 Sasaram Rohtas Bihar 821115
+                    </span>
+                    <span className="block">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">Head Office:</span> ALPHA 1st commercial belt block-c 256 Uttar Pradesh 201308
+                    </span>
+                  </>
+                )},
               ].map((c) => (
-                <div key={c.title} className="flex items-center gap-5 p-5 rounded-2xl bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 hover:shadow-md transition-all group cursor-default">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-[#1e3a5f] dark:text-blue-300 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#1e3a5f] group-hover:text-white transition-all duration-300">
+                <div key={c.title} className="flex items-start gap-5 p-5 rounded-2xl bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 hover:shadow-md transition-all group cursor-default">
+                  <div className="shrink-0 mt-0.5 w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-[#1e3a5f] dark:text-blue-300 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#1e3a5f] group-hover:text-white transition-all duration-300">
                     {c.icon}
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-wider">{c.title}</h4>
-                    <p className="font-bold text-slate-700 dark:text-gray-100">{c.val}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-wider mb-1">{c.title}</h4>
+                    <div className="font-bold text-sm text-slate-700 dark:text-gray-100 leading-snug">{c.val}</div>
                   </div>
                 </div>
               ))}

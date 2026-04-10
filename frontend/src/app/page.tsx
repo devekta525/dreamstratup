@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   FiCheck,
@@ -30,7 +30,13 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scroll = (dir: 'left' | 'right') => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: dir === 'left' ? -350 : 350, behavior: 'smooth' });
+    }
+  };
 
   const heroSlides = [
     {
@@ -107,13 +113,7 @@ export default function HomePage() {
     },
   ];
 
-  useEffect(() => {
-    if (testimonials.length <= 1) return;
-    const id = window.setInterval(() => {
-      setTestimonialIndex((i) => (i + 1) % testimonials.length);
-    }, 5500);
-    return () => window.clearInterval(id);
-  }, [testimonials.length]);
+
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] dark:bg-gray-900">
@@ -138,16 +138,16 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-black/10" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-16 sm:py-24 lg:py-32">
-          <div className="flex flex-col lg:flex-row items-center gap-8 min-h-[60vh]">
-            <div className="flex-1 w-full text-center lg:text-left mt-20 lg:mt-0">
-              <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-md">
+        <div className="relative max-w-7xl mx-auto px-4 py-12 sm:py-20 lg:py-28 h-full">
+          <div className="flex items-start justify-start w-full min-h-[60vh] pt-4 lg:pt-8">
+            <div className="w-full text-left max-w-2xl lg:max-w-3xl">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-xl">
                 <span className="text-orange-400">आपका सपना, हमारा सहयोग</span>
               </h1>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-wider mb-8 drop-shadow-md">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-wider mb-8 drop-shadow-lg">
                 APKA SAPNA, HUMARA SAHAYOG!
               </h2>
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+              <div className="flex flex-wrap gap-4 justify-start">
                 <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition active:scale-95 text-lg"
@@ -164,22 +164,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setHeroIndex((i) => (i - 1 + heroSlides.length) % heroSlides.length)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow transition"
-            aria-label="Previous banner"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            onClick={() => setHeroIndex((i) => (i + 1) % heroSlides.length)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow transition"
-            aria-label="Next banner"
-          >
-            ›
-          </button>
+
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
             {heroSlides.map((s, idx) => (
@@ -275,21 +260,21 @@ export default function HomePage() {
                 tag: 'WEEKEND DISCOUNT 40%',
                 icon: FiTool,
                 accent: 'text-orange-500',
-                bg: 'from-[#f5f7ff] via-white to-[#eef8ff]',
+                bg: 'from-[#f5f7ff] via-white to-[#eef8ff] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900',
               },
               {
                 title: 'Sanitary Business Kit',
                 tag: 'WEEKEND DISCOUNT 40%',
                 icon: FiDroplet,
                 accent: 'text-[#2bbef9]',
-                bg: 'from-[#f2fbff] via-white to-[#fff3f3]',
+                bg: 'from-[#f2fbff] via-white to-[#fff3f3] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900',
               },
               {
                 title: 'Electrical Business Kit',
                 tag: 'WEEKEND DISCOUNT 40%',
                 icon: FiZap,
                 accent: 'text-orange-500',
-                bg: 'from-[#fff6ec] via-white to-[#f2fbff]',
+                bg: 'from-[#fff6ec] via-white to-[#f2fbff] dark:from-gray-800 dark:via-gray-800 dark:to-gray-900',
               },
             ].map((kit) => (
               <div
@@ -313,7 +298,7 @@ export default function HomePage() {
 
                     <div className="relative shrink-0">
                       <div className="absolute -inset-6 rounded-full bg-[#2bbef9]/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="w-14 h-14 rounded-2xl bg-white/80 border border-white shadow-sm flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-2xl bg-white/80 dark:bg-gray-800/80 border border-white dark:border-gray-700 shadow-sm flex items-center justify-center">
                         <kit.icon size={22} className={kit.accent} />
                       </div>
                     </div>
@@ -389,63 +374,88 @@ export default function HomePage() {
             <>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div className="lg:col-span-3">
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl border-2 border-[#d51243] overflow-hidden">
-                    <div className="p-5">
-                      <div className="text-[#233a95] dark:text-blue-300 font-extrabold text-lg">Deals of the week!</div>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl border-2 border-[#d51243] shadow-lg shadow-[#d51243]/10 overflow-hidden flex flex-col h-full relative group/deal">
+                    <div className="absolute top-0 right-0 py-1 px-3 bg-[#d51243] text-white text-[10px] font-bold uppercase rounded-bl-lg tracking-wider z-10">
+                      Limited Time
+                    </div>
+                    
+                    <div className="p-6 pb-4 border-b border-gray-100 dark:border-gray-700/50 bg-gradient-to-b from-red-50/50 to-white dark:from-red-900/10 dark:to-gray-800">
+                      <div className="flex items-center gap-2">
+                        <FiZap className="text-[#d51243]" size={20} />
+                        <h3 className="text-[#233a95] dark:text-blue-300 font-extrabold text-xl">Deals of the week!</h3>
+                      </div>
 
-                      <div className="mt-3 flex items-center gap-2">
-                        {['72', '22', '48', '14'].map((t) => (
-                          <div
-                            key={t}
-                            className="w-10 h-10 rounded-lg bg-[#d51243] text-white flex items-center justify-center font-extrabold text-sm"
-                          >
-                            {t}
+                      <div className="mt-5 flex items-center gap-2">
+                        {[
+                          { value: '22', label: 'Hrs' },
+                          { value: '48', label: 'Mins' },
+                          { value: '14', label: 'Secs' },
+                        ].map((time) => (
+                          <div key={time.label} className="flex flex-col items-center flex-1">
+                            <div className="w-full aspect-square max-w-[3.5rem] rounded-lg bg-[#d51243] text-white flex items-center justify-center font-extrabold text-2xl shadow-sm border border-[#b80e38]">
+                              {time.value}
+                            </div>
+                            <span className="mt-1.5 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{time.label}</span>
                           </div>
                         ))}
                       </div>
 
-                      <div className="mt-3 text-xs text-gray-400 dark:text-gray-500">Remains until the end of the offer</div>
+                      <div className="mt-4 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center">
+                        Remains until the end of the offer
+                      </div>
                     </div>
 
-                    <div className="relative p-6 pt-0">
-                      <div className="absolute left-6 top-0 w-14 h-14 rounded-full bg-[#d51243] text-white flex items-center justify-center font-extrabold">
-                        19%
+                    <div className="p-6 pt-5 flex-1 flex flex-col">
+                      <div className="relative">
+                        <div className="absolute top-2 left-2 z-10 w-12 h-12 rounded-full bg-[#d51243] text-white flex flex-col items-center justify-center font-extrabold shadow-md transform -rotate-12 border-2 border-white dark:border-gray-800">
+                          <span className="text-sm leading-none tracking-tight">-19%</span>
+                        </div>
+
+                        <div className="w-full h-48 bg-gray-50 dark:bg-gray-700/30 rounded-xl flex items-center justify-center p-4 relative overflow-hidden">
+                          {products[0]?.images?.[0] ? (
+                            <img
+                              src={
+                                products[0].images[0].startsWith('http')
+                                  ? products[0].images[0]
+                                  : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '')}${products[0].images[0].replace(/\\/g, '/').startsWith('/') ? '' : '/'}${products[0].images[0].replace(/\\/g, '/')}`
+                              }
+                              alt={products[0].title}
+                              className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover/deal:scale-110 transition-transform duration-500 drop-shadow-sm"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlOGU4Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzY2NiIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';
+                              }}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="text-gray-400 dark:text-gray-500 text-sm font-medium">No Image Available</div>
+                          )}
+                        </div>
                       </div>
 
-                      {products[0]?.images?.[0] ? (
-                        <img
-                          src={
-                            products[0].images[0].startsWith('http')
-                              ? products[0].images[0]
-                              : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${products[0].images[0]}`
-                          }
-                          alt={products[0].title}
-                          className="w-full h-52 object-contain"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-52 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">No Image</div>
-                      )}
-
-                      <div className="mt-4">
-                        <div className="text-xl font-extrabold text-[#d51243]">
+                      <div className="mt-5 flex-1 flex flex-col">
+                        <div className="text-2xl font-extrabold text-[#d51243]">
                           {products[0].minPrice === products[0].maxPrice
                             ? `₹${products[0].minPrice.toLocaleString('en-IN')}`
                             : `₹${products[0].minPrice.toLocaleString('en-IN')}–${products[0].maxPrice.toLocaleString('en-IN')}`}
                         </div>
-                        <div className="mt-2 text-[13px] font-semibold text-gray-800 dark:text-gray-200 line-clamp-2">{products[0].title}</div>
-                        <div className="mt-1 text-[10px] font-semibold tracking-wide text-green-600">
-                          {products[0].stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
+                        <div className="mt-2 text-[14px] font-bold text-gray-800 dark:text-gray-200 line-clamp-2 leading-snug hover:text-orange-500 transition-colors">
+                          <Link href={`/shop/${products[0]._id}`}>
+                            {products[0].title}
+                          </Link>
                         </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <Link
-                          href={`/shop/${products[0]._id}`}
-                          className="inline-flex items-center justify-center w-full h-10 rounded-lg bg-[#2bbef9] hover:bg-[#1fb2e8] text-white font-bold text-sm transition"
-                        >
-                          Shop Now <FiArrowRight size={16} />
-                        </Link>
+                        
+                        <div className="mt-auto pt-4">
+                           <div className="mb-4 text-[10px] font-extrabold tracking-widest text-green-600 bg-green-50 dark:bg-green-900/20 inline-block px-2 py-1 rounded">
+                            {products[0].stock > 0 ? 'IN STOCK' : 'OUT OF STOCK'}
+                          </div>
+                          
+                          <Link
+                            href={`/shop/${products[0]._id}`}
+                            className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-[#2bbef9] hover:bg-[#1fb2e8] text-white font-extrabold text-sm transition-all active:scale-95 shadow-md shadow-[#2bbef9]/20"
+                          >
+                            Shop Now <FiArrowRight size={16} />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -547,75 +557,57 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="flex items-stretch gap-5 transition-transform duration-500" style={{ transform: `translateX(-${testimonialIndex * 320}px)` }}>
+          <div className="relative group/carousel">
+            {/* Scrollable Container */}
+            <div 
+              ref={scrollRef}
+              className="flex overflow-x-auto snap-x snap-mandatory gap-6 lg:gap-8 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+            >
               {testimonials.map((t, idx) => (
-                <div key={idx} className="w-[300px] sm:w-[320px] shrink-0">
-                  <div className="h-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-0.5 text-orange-400 text-sm">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <span key={i}>{i < t.rating ? '★' : '☆'}</span>
-                        ))}
-                      </div>
-                      <div className="text-[#2bbef9] text-3xl leading-none">&ldquo;</div>
+                <div key={idx} className="w-[85vw] sm:w-[360px] lg:w-[400px] shrink-0 snap-center flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700/60 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 p-6 sm:p-8 relative group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50/80 to-transparent dark:from-gray-800/40 rounded-tr-[2rem] rounded-bl-[3rem] pointer-events-none" />
+                  
+                  <div className="flex items-start justify-between mb-6 relative z-10">
+                    <div className="flex items-center gap-1 text-orange-400 text-[15px]">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i}>{i < t.rating ? '★' : '☆'}</span>
+                      ))}
                     </div>
+                    <div className="text-[#2bbef9]/10 group-hover:text-[#2bbef9]/30 transition-colors text-7xl leading-none font-serif absolute -top-4 -right-1 group-hover:-translate-y-1 transform duration-300">&ldquo;</div>
+                  </div>
 
-                    <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{t.quote}</p>
+                  <p className="text-[15px] sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed relative z-10 mb-8 flex-1">{t.quote}</p>
 
-                    <div className="mt-6 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#233a95] text-white flex items-center justify-center font-extrabold">
-                        {t.name
-                          .split(' ')
-                          .slice(0, 2)
-                          .map((p) => p[0])
-                          .join('')}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-sm font-extrabold text-gray-900 dark:text-gray-100 truncate">{t.name}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{t.role}</div>
-                      </div>
+                  <div className="mt-auto pt-6 border-t border-gray-100 dark:border-gray-700/50 flex items-center gap-4 relative z-10">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2bbef9] text-white flex items-center justify-center font-extrabold text-sm shadow-inner shrink-0">
+                      {t.name.split(' ').slice(0, 2).map((p) => p[0]).join('')}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-extrabold text-gray-900 dark:text-gray-100 truncate">{t.name}</div>
+                      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate">{t.role}</div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {testimonials.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
-                  className="hidden sm:inline-flex absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-sm items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-600 transition"
-                  aria-label="Previous testimonials"
-                >
-                  <FiChevronLeft size={18} className="text-gray-700 dark:text-gray-300" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTestimonialIndex((i) => (i + 1) % testimonials.length)}
-                  className="hidden sm:inline-flex absolute -right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-sm items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-600 transition"
-                  aria-label="Next testimonials"
-                >
-                  <FiChevronRight size={18} className="text-gray-700 dark:text-gray-300" />
-                </button>
-
-                <div className="mt-6 flex items-center justify-center gap-2">
-                  {testimonials.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setTestimonialIndex(idx)}
-                      className={[
-                        'h-2 rounded-full transition-all',
-                        idx === testimonialIndex ? 'w-6 bg-[#233a95]' : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500',
-                      ].join(' ')}
-                      aria-label={`Go to testimonial ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
+            {/* Navigation Arrows */}
+            <button
+              type="button"
+              onClick={() => scroll('left')}
+              className="absolute -left-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 text-[#1e3a5f] dark:text-gray-200 transition-all opacity-0 group-hover/carousel:opacity-100 scale-90 group-hover/carousel:scale-100 hidden sm:flex z-10"
+              aria-label="Scroll left"
+            >
+              <FiChevronLeft size={24} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scroll('right')}
+              className="absolute -right-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 text-[#1e3a5f] dark:text-gray-200 transition-all opacity-0 group-hover/carousel:opacity-100 scale-90 group-hover/carousel:scale-100 hidden sm:flex z-10"
+              aria-label="Scroll right"
+            >
+              <FiChevronRight size={24} />
+            </button>
           </div>
         </div>
       </section>

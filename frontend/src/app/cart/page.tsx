@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 /* eslint-disable @next/next/no-img-element */
 import toast from 'react-hot-toast';
+import { FiShield, FiTruck, FiTrash2 } from 'react-icons/fi';
 import { cartService } from '@/services/cart.service';
 import { Cart, CartItem } from '@/types';
 import { useCart } from '@/context/CartContext';
@@ -91,15 +92,17 @@ export default function CartPage() {
 
   if (isEmpty) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center gap-5 px-4 py-20">
-        <div className="text-6xl">🛒</div>
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 flex flex-col items-center justify-center gap-5 px-4 py-20">
+        <div className="w-20 h-20 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-center text-4xl">
+          🛒
+        </div>
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Your cart is empty</h2>
-        <p className="text-gray-500 dark:text-gray-300 text-sm text-center max-w-xs">
+        <p className="text-gray-500 dark:text-gray-300 text-sm text-center max-w-xs leading-relaxed">
           Looks like you haven&apos;t added anything yet. Browse our wholesale products and start filling it up!
         </p>
         <Link
           href="/shop"
-          className="mt-2 bg-[#1e3a5f] hover:bg-[#16304f] text-white font-semibold px-6 py-2.5 rounded-lg transition text-sm"
+          className="mt-2 bg-[#1e3a5f] hover:bg-[#16304f] text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm shadow-md shadow-[#1e3a5f]/20"
         >
           Continue Shopping
         </Link>
@@ -113,11 +116,11 @@ export default function CartPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-[#1e3a5f]">
+          <h1 className="text-2xl font-bold text-[#1e3a5f] dark:text-blue-200">
             Shopping Cart{' '}
             <span className="text-base font-normal text-gray-500 dark:text-gray-300">
               ({cart.items.length} {cart.items.length === 1 ? 'item' : 'items'})
@@ -125,8 +128,9 @@ export default function CartPage() {
           </h1>
           <button
             onClick={handleClearCart}
-            className="text-sm text-red-500 hover:text-red-700 underline transition"
+            className="inline-flex items-center gap-1.5 text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition"
           >
+            <FiTrash2 size={14} />
             Clear cart
           </button>
         </div>
@@ -142,10 +146,10 @@ export default function CartPage() {
               return (
                 <div
                   key={productId + '-' + idx}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex gap-4 items-start"
+                  className="bg-white dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-4 sm:p-5 flex gap-4 items-start"
                 >
                   {/* Product Image */}
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                     <img
                       src={getImageSrc(item.product?.images)}
                       alt={item.product?.title || 'Product Image'}
@@ -156,7 +160,7 @@ export default function CartPage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate">
                       {item.product?.title || 'Unknown Product'}
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-300 mt-0.5">
@@ -168,12 +172,12 @@ export default function CartPage() {
                       <button
                         onClick={() => handleUpdateQuantity(productId, item.quantity - 1)}
                         disabled={isUpdating || item.quantity <= 1}
-                        className="w-7 h-7 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
+                        className="w-8 h-8 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-200 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
                         aria-label="Decrease quantity"
                       >
                         −
                       </button>
-                      <span className="w-8 text-center text-sm font-medium text-gray-800 dark:text-gray-100">
+                      <span className="w-10 h-8 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-sm font-medium text-gray-800 dark:text-gray-100">
                         {isUpdating ? (
                           <span className="inline-block w-3 h-3 border-2 border-[#1e3a5f] border-t-transparent rounded-full animate-spin" />
                         ) : (
@@ -183,7 +187,7 @@ export default function CartPage() {
                       <button
                         onClick={() => handleUpdateQuantity(productId, item.quantity + 1)}
                         disabled={isUpdating}
-                        className="w-7 h-7 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
+                        className="w-8 h-8 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-200 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 transition text-lg leading-none"
                         aria-label="Increase quantity"
                       >
                         +
@@ -193,15 +197,16 @@ export default function CartPage() {
 
                   {/* Subtotal + Remove */}
                   <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                    <p className="text-sm font-bold text-[#1e3a5f]">
+                    <p className="text-sm sm:text-base font-bold text-[#1e3a5f] dark:text-blue-200">
                       ₹{itemSubtotal.toLocaleString('en-IN')}
                     </p>
                     <button
                       onClick={() => handleRemove(productId, item.product?.title || 'Unknown Product')}
                       disabled={isUpdating}
-                      className="text-xs text-red-400 hover:text-red-600 transition disabled:opacity-40"
+                      className="inline-flex items-center gap-1 text-xs text-red-400 dark:text-red-300 hover:text-red-600 dark:hover:text-red-200 transition disabled:opacity-40"
                       aria-label="Remove item"
                     >
+                      <FiTrash2 size={12} />
                       Remove
                     </button>
                   </div>
@@ -212,7 +217,7 @@ export default function CartPage() {
 
           {/* Cart Summary Sidebar */}
           <div className="lg:w-80 flex-shrink-0">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sticky top-20">
+            <div className="bg-white dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-6 sticky top-20">
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Order Summary</h2>
 
               <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
@@ -232,21 +237,32 @@ export default function CartPage() {
 
               <div className="flex justify-between text-base font-bold text-gray-900 dark:text-gray-100">
                 <span>Total</span>
-                <span className="text-[#1e3a5f]">
+                <span className="text-[#1e3a5f] dark:text-blue-200">
                   ₹{(cart.totalAmount ?? subtotal).toLocaleString('en-IN')}
                 </span>
               </div>
 
+              <div className="mt-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 p-3 space-y-2">
+                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                  <FiShield size={14} className="text-green-600" />
+                  Secure checkout experience
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                  <FiTruck size={14} className="text-orange-500" />
+                  Shipping charges shown at checkout
+                </div>
+              </div>
+
               <button
                 onClick={() => router.push('/checkout')}
-                className="mt-5 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition text-sm"
+                className="mt-5 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition text-sm shadow-md shadow-orange-500/20"
               >
                 Proceed to Checkout
               </button>
 
               <Link
                 href="/shop"
-                className="mt-3 block text-center text-sm text-[#1e3a5f] hover:underline"
+                className="mt-3 block text-center text-sm text-[#1e3a5f] dark:text-blue-200 hover:underline"
               >
                 ← Continue Shopping
               </Link>

@@ -209,33 +209,33 @@ export default function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-slate-100/90 via-gray-50/95 to-slate-100/90 dark:from-gray-900/95 dark:via-[#0b1220]/95 dark:to-[#171010]/95 backdrop-blur-xl border-b border-gray-200/80 dark:border-gray-800/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
       {/* Decorative gradient line at the top */}
       <div className="h-1 w-full bg-gradient-to-r from-[#1e3a5f] via-[#2bbef9] to-orange-500"></div>
 
-      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 h-[5.5rem] flex items-center justify-between gap-4 lg:gap-8">
 
         {/* Left: Logo */}
         <Link href="/" className="flex items-center shrink-0 group">
           <img
             src="/logo.png.png"
             alt="DreamStartup"
-            className="h-20 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+            className="h-[4.5rem] w-auto object-contain group-hover:scale-[1.02] transition-transform duration-500 drop-shadow-sm"
           />
         </Link>
 
         {/* Center: Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1.5">
           {navLinks.map((link) => {
             const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
             return (
               <Link
                 key={link.path}
                 href={link.path}
-                className={`px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${
+                className={`whitespace-nowrap px-3 2xl:px-4 py-2.5 rounded-full text-[14px] font-bold transition-all duration-300 ${
                   isActive
-                    ? 'bg-blue-50 text-blue-600 shadow-sm border border-blue-100/50'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-[#1e3a5f]'
+                    ? 'bg-white dark:bg-gray-800 text-[#2bbef9] shadow-sm border border-blue-100 dark:border-blue-900/30'
+                    : 'text-[#1e3a5f]/80 dark:text-gray-300 hover:bg-white/60 dark:hover:bg-gray-800 hover:text-orange-500 hover:shadow-sm'
                 }`}
               >
                 {link.name}
@@ -245,26 +245,26 @@ export default function Navbar() {
         </nav>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-3 sm:gap-5 shrink-0 ml-auto lg:ml-0">
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-auto lg:ml-0">
 
           {/* Search Bar (Desktop) */}
           <div className="hidden xl:block relative" ref={searchRef}>
             <form onSubmit={handleSearchSubmit}>
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={16} />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 z-10" size={18} />
               <input
                 type="text"
                 placeholder="Search products, brands, categories..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => setShowSearch(true)}
-                className="w-[320px] h-10 pl-11 pr-4 rounded-full bg-gray-100/80 border border-transparent focus:bg-white focus:border-blue-200 focus:ring-4 focus:ring-blue-50 text-sm font-medium transition-all outline-none"
+                className="w-[260px] 2xl:w-[340px] h-11 pl-12 pr-4 rounded-full bg-white/60 dark:bg-gray-800/60 border border-slate-200/60 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 focus:border-[#2bbef9] dark:focus:border-[#2bbef9] focus:ring-4 focus:ring-[#2bbef9]/10 text-sm font-semibold text-gray-800 dark:text-gray-100 placeholder-gray-400 outline-none transition-all shadow-inner"
                 autoComplete="off"
               />
             </form>
 
             {/* Desktop search dropdown */}
             {showSearch && (
-              <div className="absolute top-full left-0 right-0 mt-2 w-[420px] z-50">
+              <div className="absolute top-full left-0 right-0 mt-3 w-[460px] z-50">
                 <SearchDropdown />
               </div>
             )}
@@ -273,56 +273,56 @@ export default function Navbar() {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleTheme}
-            className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-white transition-colors"
+            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full text-slate-500 dark:text-gray-300 bg-white/60 dark:bg-gray-800/60 border border-slate-200/60 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 hover:text-orange-500 dark:hover:text-orange-400 transition-all shadow-sm hover:shadow"
             title="Toggle Dark Mode"
           >
             {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
           </button>
 
           {/* Cart */}
-          <Link href="/cart" className="relative flex items-center justify-center w-10 h-10 rounded-full text-gray-700 hover:bg-gray-100 transition-colors">
-            <FiShoppingCart size={22} />
-            <span className="absolute top-0 right-0 -mr-1 -mt-1 min-w-[20px] h-5 px-1 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white text-[11px] font-bold flex items-center justify-center shadow-sm border-2 border-white">
+          <Link href="/cart" className="relative flex items-center justify-center w-11 h-11 rounded-full text-[#1e3a5f] dark:text-gray-300 bg-white/60 dark:bg-gray-800/60 border border-slate-200/60 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-700 hover:text-orange-500 dark:hover:text-orange-400 transition-all shadow-sm hover:shadow">
+            <FiShoppingCart size={20} />
+            <span className="absolute top-0 right-0 -mr-1 -mt-1 min-w-[20px] h-5 px-1.5 rounded-full bg-gradient-to-r from-[#d51243] to-red-500 text-white text-[10px] tracking-wider font-extrabold flex items-center justify-center shadow-md border-2 border-white dark:border-gray-900">
               {cartCount > 99 ? '99+' : cartCount}
             </span>
           </Link>
 
           {/* Auth */}
-          <div className="hidden sm:flex items-center gap-4 pl-3 border-l border-gray-200">
+          <div className="hidden sm:flex items-center gap-4 pl-4 border-l border-slate-200/60 dark:border-gray-700">
             {user ? (
                <div className="relative group">
-                 <button className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-blue-600 transition" type="button">
-                   <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#1e3a5f] to-blue-400 text-white flex items-center justify-center shadow-inner font-bold text-sm">
+                 <button className="flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-[#2bbef9] transition" type="button">
+                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#1e3a5f] to-[#2bbef9] text-white flex items-center justify-center shadow-md font-bold text-base border-2 border-white dark:border-gray-800">
                      {user.name?.charAt(0).toUpperCase()}
                    </div>
                  </button>
-                 <div className="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-gray-100 overflow-hidden transform origin-top group-hover:scale-100 scale-95">
-                   <div className="px-5 py-4 bg-gradient-to-b from-gray-50 to-white border-b border-gray-100">
-                     <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
-                     <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+                 <div className="absolute right-0 mt-3 w-60 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 border border-gray-100 dark:border-gray-700 overflow-hidden transform origin-top-right group-hover:scale-100 scale-95">
+                   <div className="px-5 py-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800/50 dark:to-gray-800 border-b border-gray-100 dark:border-gray-700/50">
+                     <p className="text-[15px] font-extrabold text-gray-900 dark:text-white truncate">{user.name}</p>
+                     <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate mt-0.5">{user.email}</p>
                    </div>
                    <div className="py-2.5">
-                     <Link href={user.role === 'admin' ? '/admin' : user.role === 'vendor' ? '/provider/dashboard' : '/dashboard'} className="block px-5 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium transition-colors">Dashboard</Link>
-                     <Link href="/dashboard/profile" className="block px-5 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium transition-colors">Profile</Link>
-                     <Link href="/dashboard/orders" className="block px-5 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium transition-colors">Orders</Link>
-                     <Link href="/dashboard/wishlist" className="block px-5 py-2 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium transition-colors">Wishlist</Link>
+                     <Link href={user.role === 'admin' ? '/admin' : user.role === 'vendor' ? '/provider/dashboard' : '/dashboard'} className="block px-5 py-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-[#2bbef9] text-sm font-semibold transition-colors">Dashboard</Link>
+                     <Link href="/dashboard/profile" className="block px-5 py-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-[#2bbef9] text-sm font-semibold transition-colors">Profile</Link>
+                     <Link href="/dashboard/orders" className="block px-5 py-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-[#2bbef9] text-sm font-semibold transition-colors">Orders</Link>
+                     <Link href="/dashboard/wishlist" className="block px-5 py-2 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-[#2bbef9] text-sm font-semibold transition-colors">Wishlist</Link>
                    </div>
-                   <div className="py-2.5 border-t border-gray-100 bg-gray-50/50">
-                     <button onClick={logout} className="block w-full text-left px-5 py-2 hover:bg-red-50 text-red-600 text-sm font-bold transition-colors">Logout Account</button>
+                   <div className="py-2.5 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50">
+                     <button onClick={logout} className="block w-full text-left px-5 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-[#d51243] text-sm font-bold transition-colors">Logout Account</button>
                    </div>
                  </div>
                </div>
             ) : (
               <>
-                <Link href="/login" className="text-sm font-bold text-gray-500 hover:text-gray-800 transition-colors">Login</Link>
-                <Link href="/register" className="text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-md shadow-blue-500/20 px-6 py-2.5 rounded-full transition-all hover:shadow-lg hover:-translate-y-0.5">Sign Up</Link>
+                <Link href="/login" className="text-[15px] font-bold text-[#1e3a5f] dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors px-1">Login</Link>
+                <Link href="/register" className="text-sm font-extrabold tracking-wide text-white bg-gradient-to-r from-[#2bbef9] to-[#1e3a5f] hover:from-[#1fb2e8] hover:to-[#16304f] shadow-lg shadow-blue-500/20 px-8 py-3 rounded-full transition-all hover:scale-[1.02] border border-white/10">Sign Up</Link>
               </>
             )}
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden flex items-center justify-center w-10 h-10 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-            {isOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+          <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden flex items-center justify-center w-11 h-11 text-gray-700 dark:text-gray-300 bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-700 rounded-full border border-slate-200/60 dark:border-gray-700 transition-colors shadow-sm">
+            {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
           </button>
         </div>
       </div>

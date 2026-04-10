@@ -36,7 +36,9 @@ export default function Footer() {
                 <FaFacebookF size={14} className="text-white" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/dreamstartups?igsh=MXI3bHlqOHkyenZqZg%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 border border-white/10 hover:bg-white/15 transition"
                 aria-label="Instagram"
               >
@@ -81,19 +83,28 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-extrabold mb-4">Contact</h4>
-            <div className="space-y-3 text-sm">
-              <p className="flex items-start gap-2">
-                <FiPhone size={14} className="mt-0.5 text-white/80" />
-                <span>+91 98765 43210</span>
+            <div className="space-y-4 text-sm leading-relaxed">
+              <p className="flex items-start gap-3">
+                <FiPhone size={16} className="mt-0.5 text-orange-400 shrink-0" />
+                <span>+91 73728 81290</span>
               </p>
-              <p className="flex items-start gap-2">
-                <FiMail size={14} className="mt-0.5 text-white/80" />
-                <span>info@dreamstartup.in</span>
+              <p className="flex items-start gap-3">
+                <FiMail size={16} className="mt-0.5 text-orange-400 shrink-0" />
+                <span>dreamsstartups@gmail.com</span>
               </p>
-              <p className="flex items-start gap-2">
-                <FiMapPin size={14} className="mt-0.5 text-white/80" />
-                <span>Mumbai, Maharashtra, India</span>
-              </p>
+              <div className="flex items-start gap-3">
+                <FiMapPin size={16} className="mt-0.5 text-orange-400 shrink-0" />
+                <div className="flex flex-col gap-2">
+                  <span>
+                    <span className="text-white/60 font-semibold block text-[12px] uppercase tracking-wider mb-0.5">Address</span>
+                    New Area Gali no-07 Sasaram Rohtas Bihar 821115
+                  </span>
+                  <span>
+                    <span className="text-white/60 font-semibold block text-[12px] uppercase tracking-wider mb-0.5">Head Office</span>
+                    ALPHA 1st commercial belt block-c 256 Uttar Pradesh 201308
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

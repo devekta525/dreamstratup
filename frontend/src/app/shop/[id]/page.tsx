@@ -26,12 +26,13 @@ import { useAuth } from '@/context/AuthContext';
 import Loader from '@/components/common/Loader';
 import { Product, BulkPricingTier, Review } from '@/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') ?? '';
-const WHATSAPP_NUMBER = '919999999999'; // Update with your actual WhatsApp business number
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+const WHATSAPP_NUMBER = '917372881290'; // Update with your actual WhatsApp business number
 
 function resolveImage(src: string): string {
   if (!src) return '';
-  return src.startsWith('http') ? src : `${API_BASE}${src}`;
+  if (src.startsWith('http') || src.startsWith('data:') || src.startsWith('blob:')) return src;
+  return `${API_BASE}${src.startsWith('/') ? '' : '/'}${src}`;
 }
 
 export default function ProductDetailsPage({
@@ -52,6 +53,8 @@ export default function ProductDetailsPage({
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [thumbStart, setThumbStart] = useState(0);
+  const [failedThumbs, setFailedThumbs] = useState<Record<number, boolean>>({});
+  const [failedMain, setFailedMain] = useState(false);
 
   // Reviews
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -78,6 +81,10 @@ export default function ProductDetailsPage({
         } else {
           setProduct(data);
           setQuantity(data.moq ?? 5);
+          setActiveImage(0);
+          setThumbStart(0);
+          setFailedThumbs({});
+          setFailedMain(false);
         }
       } catch (err: unknown) {
         const status = (err as { response?: { status?: number } })?.response?.status;
@@ -126,7 +133,7 @@ export default function ProductDetailsPage({
 
   const handleWhatsAppChat = () => {
     if (!product) return;
-    const message = `Hi, I'm interested in *${product.title}*.\n\nCategory: ${product.category}\nBrand: ${product.brand || 'N/A'}\nQuantity: ${quantity} units\n\nPlease share more details and best pricing.`;
+    const message = `Hi, I'm interested in ${product.title}.\n\nCategory: ${product.category}\nBrand: ${product.brand || 'N/A'}\nQuantity: ${quantity} units\n\nPlease share more details and best pricing.`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -255,19 +262,35 @@ export default function ProductDetailsPage({
                     return (
                       <button
                         key={realIdx}
-                        onClick={() => setActiveImage(realIdx)}
-                        onMouseEnter={() => setActiveImage(realIdx)}
+                        onClick={() => {
+                          setActiveImage(realIdx);
+                          setFailedMain(false);
+                        }}
+                        onMouseEnter={() => {
+                          setActiveImage(realIdx);
+                          setFailedMain(false);
+                        }}
                         className={`w-[64px] h-[64px] rounded border-2 overflow-hidden shrink-0 transition-all ${
                           activeImage === realIdx
                             ? 'border-orange-500 shadow-md'
                             : 'border-gray-200 dark:border-gray-600 hover:border-orange-300'
                         }`}
                       >
-                        <img
-                          src={resolveImage(img)}
-                          alt={`${product.title} ${realIdx + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+                        {failedThumbs[realIdx] ? (
+                          <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-[10px] text-gray-400">
+                            No image
+                          </div>
+                        ) : (
+                          <img
+                            src={resolveImage(img)}
+                            alt={`${product.title} ${realIdx + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={() => {
+                              setFailedThumbs((prev) => ({ ...prev, [realIdx]: true }));
+                              if (activeImage === realIdx) setFailedMain(true);
+                            }}
+                          />
+                        )}
                       </button>
                     );
                   })}
@@ -285,16 +308,19 @@ export default function ProductDetailsPage({
 
               {/* Main Image */}
               <div className="flex-1 aspect-square bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex items-center justify-center relative">
-                {hasImages ? (
+                {hasImages && !failedMain ? (
                   <img
                     src={resolveImage(images[activeImage])}
                     alt={product.title}
-                    className="w-full h-full object-contain p-4"
+                    className="w-full h-full object-contain p-4 transition-transform duration-300 hover:scale-[1.03]"
+                    onError={() => setFailedMain(true)}
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-gray-300 gap-3 p-8">
                     <FiPackage size={64} />
-                    <span className="text-sm">No image available</span>
+                    <span className="text-sm">
+                      {hasImages ? 'Image failed to load' : 'No image available'}
+                    </span>
                   </div>
                 )}
                 {/* Wishlist heart */}
@@ -415,10 +441,17 @@ export default function ProductDetailsPage({
                         type="number"
                         value={quantity}
                         min={product.moq ?? 5}
+                        step={1}
                         onChange={(e) => {
                           const val = parseInt(e.target.value, 10);
                           if (!isNaN(val) && val >= (product.moq ?? 5)) {
                             setQuantity(val);
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          if (isNaN(val) || val < (product.moq ?? 5)) {
+                            setQuantity(product.moq ?? 5);
                           }
                         }}
                         className="w-20 text-center text-sm font-semibold text-gray-800 dark:text-gray-100 dark:bg-gray-800 border-0 focus:outline-none h-10"
@@ -487,6 +520,18 @@ export default function ProductDetailsPage({
                     Out of stock. You can still send an inquiry.
                   </p>
                 )}
+              </div>
+
+              <div className="px-4 lg:px-6 pb-5">
+                <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-700/30 px-4 py-3 flex flex-wrap items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
+                  <span className="inline-flex items-center gap-1">
+                    <FiCheckCircle className="text-green-600" /> Verified listing
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <FiPackage className="text-orange-500" /> MOQ-based wholesale pricing
+                  </span>
+                  <span>Fast response on inquiry</span>
+                </div>
               </div>
             </div>
           </div>
